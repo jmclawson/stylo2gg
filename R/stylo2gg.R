@@ -906,8 +906,6 @@ s2g_highlight_rect <- function(the_plot,
       end <- c(start - 1, length(the_coords))
       end <- end[end > 0]
 
-      print(start)
-
       if (length(start) > 1) {
         the_branch_max <- c()
         the_branch_min <- c()
