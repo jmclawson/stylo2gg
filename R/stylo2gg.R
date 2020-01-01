@@ -1,4 +1,4 @@
-#' Visualize \code{stylo} data with \stylo{ggplot2}.
+#' Visualize \code{stylo} data with \code{ggplot2}.
 #'
 #' @param df An object saved from running \strong{\code{stylo}}
 #' on a corpus
