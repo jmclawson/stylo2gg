@@ -94,9 +94,11 @@
 #' @export stylo2gg
 
 
-# library(dendextend)
-# library(ggplot2)
-# library(dplyr)
+library(dendextend)
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+if ("lemon" %in% rownames(installed.packages())) library(lemon)
 
 stylo2gg <- function(df, viz, num.features,
                      title = NULL, caption = FALSE,
