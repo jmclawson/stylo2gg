@@ -838,6 +838,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                                  highlight = highlight,
                                  the_colors = the_colors,
                                  highlight.nudge)
+  message("platypus-z2")
 
   if (!missing(title)) {
     if (title == "") {
@@ -853,6 +854,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
   }
 
   if (!is.null(title)) {
+    message("platypus-z1")
     the_plot <- the_plot +
       ggtitle(title)
   }
