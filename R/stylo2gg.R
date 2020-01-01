@@ -857,6 +857,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     message("platypus-z1")
     the_plot <- the_plot +
       ggtitle(title)
+    message("platypus-z-zed")
   }
   return(the_plot)
 }
@@ -915,7 +916,6 @@ s2g_highlight_rect <- function(the_plot,
       end <- end[end > 0]
 
       print(start)
-      return(start)
 
       if (length(start) > 1) {
         print("platypus-1")
