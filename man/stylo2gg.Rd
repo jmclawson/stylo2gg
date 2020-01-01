@@ -2,7 +2,7 @@
 % Please edit documentation in R/stylo2gg.R
 \name{stylo2gg}
 \alias{stylo2gg}
-\title{Visualize stylo data with ggplot2.}
+\title{Visualize \code{stylo} data with \stylo{ggplot2}.}
 \usage{
 stylo2gg(
   df,
@@ -123,7 +123,7 @@ optionally define some extra space when a box overlaps the
 edge of a label.}
 }
 \description{
-Visualize stylo data with ggplot2.
+Visualize \code{stylo} data with \stylo{ggplot2}.
 }
 \details{
 Because \code{stylo2gg} builds on \code{ggplot2}, almost all
@@ -137,4 +137,5 @@ my_data \%>\% stylo2gg()
 # Move the legend
 my_data \%>\% stylo2gg() +
   theme(legend.position = "bottom")
+
 }

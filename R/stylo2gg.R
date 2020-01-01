@@ -89,6 +89,9 @@
 #' # Move the legend
 #' my_data %>% stylo2gg() +
 #'   theme(legend.position = "bottom")
+#'
+#' @import dendextend ggplot2 dplyr ggrepel lemon
+#' @export stylo2gg
 
 
 # library(dendextend)
