@@ -93,14 +93,6 @@
 #' @import dendextend ggplot2 dplyr ggrepel lemon
 #' @export stylo2gg
 
-message("platypus-a")
-
-library(dendextend)
-library(ggplot2)
-library(dplyr)
-library(ggrepel)
-if ("lemon" %in% rownames(installed.packages())) library(lemon)
-
 stylo2gg <- function(df, viz, num.features,
                      title = NULL, caption = FALSE,
                      legend, black = NULL, highlight = NULL,
@@ -109,6 +101,11 @@ stylo2gg <- function(df, viz, num.features,
                      scaling = FALSE, distance.measure, linkage,
                      horiz = TRUE, axis.labels = FALSE,
                      highlight.nudge) {
+  library(dendextend)
+  library(ggplot2)
+  library(dplyr)
+  library(ggrepel)
+  if ("lemon" %in% rownames(installed.packages())) library(lemon)
   df_a <- df
   message("platypus-b")
   if (missing(num.features)) {
@@ -896,7 +893,6 @@ s2g_highlight <- function(the_plot, df_pca, highlight) {
   return(the_plot)
 }
 
-# s2g_highlight_rect <- function() {
 s2g_highlight_rect <- function(the_plot,
                                the_ggdend,
                                highlight,
