@@ -916,31 +916,41 @@ s2g_highlight_rect <- function(the_plot,
         the_branch_max <- c()
         the_branch_min <- c()
         for (i in 1:length(start)) {
-          the_branch_min[i] <- the_ggdend$labels$y[the_ggdend$labels$x %in%
-                                                     the_coords[start[i]]:the_coords[end[i]]] %>%
+          the_branch_min[i] <-
+            the_ggdend$labels$y %>%
+            .[the_ggdend$labels$x %in%
+                the_coords[start[i]]:the_coords[end[i]]] %>%
             max()
 
-          the_branch_max[i] <- the_ggdend$segments$y[the_ggdend$segments$yend == the_branch_min[i]] %>% max()
+          the_branch_max[i] <-
+            the_ggdend$segments$y %>%
+            .[the_ggdend$segments$yend ==
+                the_branch_min[i]] %>%
+            max()
 
           if (the_coords[start[i]] == the_coords[end[i]]) {
             the_branch_max[i] <- the_branch_min[i]*1.1
           }
 
-          if (!missing(highlight.nudge)){
+          if (!missing(highlight.nudge)) {
             h.n <- highlight.nudge
           } else {
             h.n <- 0
           }
 
-          the_rect <- data.frame(xmin = the_coords[start[i]]-0.5,
-                                 xmax = the_coords[end[i]]+0.5,
-                                 ymin = -0.1 - h.n,
-                                 ymax = mean(c(the_branch_min[i], the_branch_max[i])),
-                                 class = tc)
+          the_rect <-
+            data.frame(xmin = the_coords[start[i]] - 0.5,
+                       xmax = the_coords[end[i]] + 0.5,
+                       ymin = -0.1 - h.n,
+                       ymax = mean(c(the_branch_min[i],
+                                     the_branch_max[i])),
+                       class = tc)
 
-          silly_guides <- rep(0, the_ggdend$labels$class %>%
-                                unique() %>%
-                                length())
+          silly_guides <-
+            rep(0, the_ggdend$labels$class %>%
+                  unique() %>%
+                  length()
+                )
 
           silly_guides[h] <- 2
 
@@ -953,15 +963,24 @@ s2g_highlight_rect <- function(the_plot,
                           color = class),
                       fill = "white", alpha = 0, linetype = 2,
                       show.legend = TRUE) +
-            guides(color = guide_legend(override.aes = list(linetype = silly_guides ) ) )
+            guides(
+              color = guide_legend(
+                override.aes = list(linetype = silly_guides)
+                )
+              )
           # scale_linetype_manual(values = 2)
         }
       } else {
-        the_branch_min <- the_ggdend$labels$y[the_ggdend$labels$x %in%
-                                                the_coords[start]:the_coords[end]] %>%
+        the_branch_min <-
+          the_ggdend$labels$y %>%
+          .[the_ggdend$labels$x %in%
+              the_coords[start]:the_coords[end]] %>%
           max()
 
-        the_branch_max <- the_ggdend$segments$y[the_ggdend$segments$yend == the_branch_min] %>% max()
+        the_branch_max <-
+          the_ggdend$segments$y %>%
+          .[the_ggdend$segments$yend == the_branch_min] %>%
+          max()
 
         if (the_coords[start] == the_coords[end]) {
           the_branch_max <- the_branch_min*1.1
@@ -972,10 +991,12 @@ s2g_highlight_rect <- function(the_plot,
 
         the_ggdend$labels$label_widths <- label_widths
 
-        the_ggdend$labels$label_ymin <- the_ggdend$labels$y - (the_ggdend$labels$label_widths / 2)
+        the_ggdend$labels$label_ymin <-
+          the_ggdend$labels$y -
+          (the_ggdend$labels$label_widths / 2)
 
         # label_ymin <- min(the_ggdend$labels$label_ymin)
-        if (!missing(highlight.nudge)){
+        if (!missing(highlight.nudge)) {
           h.n <- highlight.nudge
         } else {
           h.n <- 0
@@ -1004,7 +1025,12 @@ s2g_highlight_rect <- function(the_plot,
                         ymax = ymax,
                         color = class),
                     fill = "white", alpha = 0, linetype = 2) +
-          guides(color = guide_legend(override.aes = list(linetype = silly_guides ) ) )
+          guides(
+            color = guide_legend(
+              override.aes = list(
+                linetype = silly_guides)
+              )
+            )
       }
     }
   }
