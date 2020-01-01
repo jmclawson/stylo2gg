@@ -914,6 +914,7 @@ s2g_highlight_rect <- function(the_plot,
       if (length(start) > 1) {
 
         the_branch_max <- c()
+        the_branch_min <- c()
         for (i in 1:length(start)) {
           the_branch_min[i] <- the_ggdend$labels$y[the_ggdend$labels$x %in%
                                                      the_coords[start[i]]:the_coords[end[i]]] %>%
