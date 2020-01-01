@@ -912,7 +912,7 @@ s2g_highlight_rect <- function(the_plot,
       end <- end[end > 0]
 
       if (length(start) > 1) {
-
+        message("platypus-1")
         the_branch_max <- c()
         the_branch_min <- c()
         for (i in 1:length(start)) {
@@ -927,8 +927,9 @@ s2g_highlight_rect <- function(the_plot,
             .[the_ggdend$segments$yend ==
                 the_branch_min[i]] %>%
             max()
-
+          message("platypus-2")
           if (the_coords[start[i]] == the_coords[end[i]]) {
+            message("platypus-3")
             the_branch_max[i] <- the_branch_min[i]*1.1
           }
 
@@ -937,7 +938,7 @@ s2g_highlight_rect <- function(the_plot,
           } else {
             h.n <- 0
           }
-
+          message("platypus-4")
           the_rect <-
             data.frame(xmin = the_coords[start[i]] - 0.5,
                        xmax = the_coords[end[i]] + 0.5,
@@ -945,7 +946,7 @@ s2g_highlight_rect <- function(the_plot,
                        ymax = mean(c(the_branch_min[i],
                                      the_branch_max[i])),
                        class = tc)
-
+          message("platypus-5")
           silly_guides <-
             rep(0, the_ggdend$labels$class %>%
                   unique() %>%
@@ -971,18 +972,20 @@ s2g_highlight_rect <- function(the_plot,
           # scale_linetype_manual(values = 2)
         }
       } else {
+        message("platypus-6")
         the_branch_min <-
           the_ggdend$labels$y %>%
           .[the_ggdend$labels$x %in%
               the_coords[start]:the_coords[end]] %>%
           max()
-
+        message("platypus-7")
         the_branch_max <-
           the_ggdend$segments$y %>%
           .[the_ggdend$segments$yend == the_branch_min] %>%
           max()
-
+        message("platypus-8")
         if (the_coords[start] == the_coords[end]) {
+          message("platypus-9")
           the_branch_max <- the_branch_min*1.1
         }
 
