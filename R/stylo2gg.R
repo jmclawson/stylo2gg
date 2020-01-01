@@ -917,7 +917,7 @@ s2g_highlight_rect <- function(the_plot,
       end <- end[end > 0]
 
       if (length(start) > 1) {
-        message("platypus-1")
+        print("platypus-1")
         the_branch_max <- c()
         the_branch_min <- c()
         for (i in 1:length(start)) {
