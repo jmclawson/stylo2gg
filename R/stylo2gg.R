@@ -93,6 +93,7 @@
 #' @import dendextend ggplot2 dplyr ggrepel lemon
 #' @export stylo2gg
 
+message("platypus-a")
 
 library(dendextend)
 library(ggplot2)
@@ -109,7 +110,7 @@ stylo2gg <- function(df, viz, num.features,
                      horiz = TRUE, axis.labels = FALSE,
                      highlight.nudge) {
   df_a <- df
-
+  message("platypus-b")
   if (missing(num.features)) {
     num.features <- length(df$features.actually.used)
   }
@@ -181,7 +182,7 @@ stylo2gg <- function(df, viz, num.features,
       if (the_dist == "delta") {
         the_dist <- "Classic Delta"
       }
-
+      message("platypus-c")
       the_dist <- paste0(toupper(substr(the_dist, 1, 1)),
                         substr(the_dist, 2, nchar(the_dist)))
 
@@ -237,6 +238,7 @@ stylo2gg <- function(df, viz, num.features,
 
     if (axis.labels) {
       if (viz == "CA") {
+        message("platypus-d")
         the_distance <- the_viz
         the_viz <- NULL
       }
@@ -316,12 +318,14 @@ stylo2gg <- function(df, viz, num.features,
                         title, caption, black, the_caption,
                         scaling, invert.x, invert.y)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
+    message("platypus-e")
     the_plot <- s2g_hc(df_z, df, df_a, the_distance,
                        highlight, title, caption, the_caption,
                        labeling, classing, linkage, the_class,
                        highlight.nudge, num_shapes, my_shapes,
                        shapes, legend, horiz, axis.labels,
                        black, distance.measure)
+    message("platypus-f")
   }
   suppressWarnings(print(the_plot))
   }
@@ -486,6 +490,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                    highlight.nudge, num_shapes, my_shapes,
                    shapes, legend, horiz, axis.labels,
                    black, distance.measure){
+  message("platypus-g")
   if (missing(labeling)) {
     labeling <- 0
   } else {
