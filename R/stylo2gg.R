@@ -912,28 +912,32 @@ s2g_highlight_rect <- function(the_plot,
 
       the_coords <- the_ggdend$labels[the_ggdend$labels$class == tc,"x"]
 
-      start = c(1, which(diff(the_coords) != 1 & diff(the_coords) != 0) + 1)
-      end = c(start - 1, length(the_coords))
+      start <- c(1, which(diff(the_coords) != 1 & diff(the_coords) != 0) + 1)
+      end <- c(start - 1, length(the_coords))
       end <- end[end > 0]
+
+      print(start)
 
       if (length(start) > 1) {
         print("platypus-1")
         the_branch_max <- c()
         the_branch_min <- c()
         for (i in 1:length(start)) {
+          from1 <- the_ggdend$labels$y
+          here <- the_coords[start[i]]
+          there <- the_coords[end[i]]
           the_branch_min[i] <-
-            the_ggdend$labels$y %>%
-            .[the_ggdend$labels$x %in%
-                the_coords[start[i]]:the_coords[end[i]]] %>%
+            from1[the_ggdend$labels$x %in% here:there] %>%
             max()
 
+          from2 <- the_ggdend$segments$y
           the_branch_max[i] <-
-            the_ggdend$segments$y %>%
-            .[the_ggdend$segments$yend ==
+            from2[the_ggdend$segments$yend ==
                 the_branch_min[i]] %>%
             max()
+
           message("platypus-2")
-          if (the_coords[start[i]] == the_coords[end[i]]) {
+          if (here == there) {
             message("platypus-3")
             the_branch_max[i] <- the_branch_min[i]*1.1
           }
