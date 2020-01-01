@@ -917,6 +917,7 @@ s2g_highlight_rect <- function(the_plot,
       end <- end[end > 0]
 
       print(start)
+      return(start)
 
       if (length(start) > 1) {
         print("platypus-1")
