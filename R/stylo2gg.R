@@ -107,7 +107,6 @@ stylo2gg <- function(df, viz, num.features,
   library(ggrepel)
   if ("lemon" %in% rownames(installed.packages())) library(lemon)
   df_a <- df
-  message("platypus-b")
   if (missing(num.features)) {
     num.features <- length(df$features.actually.used)
   }
@@ -179,7 +178,6 @@ stylo2gg <- function(df, viz, num.features,
       if (the_dist == "delta") {
         the_dist <- "Classic Delta"
       }
-      message("platypus-c")
       the_dist <- paste0(toupper(substr(the_dist, 1, 1)),
                         substr(the_dist, 2, nchar(the_dist)))
 
@@ -235,7 +233,6 @@ stylo2gg <- function(df, viz, num.features,
 
     if (axis.labels) {
       if (viz == "CA") {
-        message("platypus-d")
         the_distance <- the_viz
         the_viz <- NULL
       }
@@ -315,14 +312,12 @@ stylo2gg <- function(df, viz, num.features,
                         title, caption, black, the_caption,
                         scaling, invert.x, invert.y)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
-    message("platypus-e")
     the_plot <- s2g_hc(df_z, df, df_a, the_distance,
                        highlight, title, caption, the_caption,
                        labeling, classing, linkage, the_class,
                        highlight.nudge, num_shapes, my_shapes,
                        shapes, legend, horiz, axis.labels,
                        black, distance.measure)
-    message("platypus-f")
   }
   suppressWarnings(print(the_plot))
   }
@@ -487,7 +482,6 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                    highlight.nudge, num_shapes, my_shapes,
                    shapes, legend, horiz, axis.labels,
                    black, distance.measure){
-  message("platypus-g")
   if (missing(labeling)) {
     labeling <- 0
   } else {
@@ -838,7 +832,6 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                                  highlight = highlight,
                                  the_colors = the_colors,
                                  highlight.nudge)
-  message("platypus-z2")
 
   if (!missing(title)) {
     if (title == "") {
@@ -854,10 +847,8 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
   }
 
   if (!is.null(title)) {
-    message("platypus-z1")
     the_plot <- the_plot +
       ggtitle(title)
-    message("platypus-z-zed")
   }
   return(the_plot)
 }
@@ -918,7 +909,6 @@ s2g_highlight_rect <- function(the_plot,
       print(start)
 
       if (length(start) > 1) {
-        print("platypus-1")
         the_branch_max <- c()
         the_branch_min <- c()
         for (i in 1:length(start)) {
@@ -935,9 +925,7 @@ s2g_highlight_rect <- function(the_plot,
                 the_branch_min[i]] %>%
             max()
 
-          message("platypus-2")
           if (here == there) {
-            message("platypus-3")
             the_branch_max[i] <- the_branch_min[i]*1.1
           }
 
@@ -946,7 +934,6 @@ s2g_highlight_rect <- function(the_plot,
           } else {
             h.n <- 0
           }
-          message("platypus-4")
           the_rect <-
             data.frame(xmin = the_coords[start[i]] - 0.5,
                        xmax = the_coords[end[i]] + 0.5,
@@ -954,7 +941,6 @@ s2g_highlight_rect <- function(the_plot,
                        ymax = mean(c(the_branch_min[i],
                                      the_branch_max[i])),
                        class = tc)
-          message("platypus-5")
           silly_guides <-
             rep(0, the_ggdend$labels$class %>%
                   unique() %>%
@@ -980,20 +966,16 @@ s2g_highlight_rect <- function(the_plot,
           # scale_linetype_manual(values = 2)
         }
       } else {
-        message("platypus-6")
         the_branch_min <-
           the_ggdend$labels$y %>%
           .[the_ggdend$labels$x %in%
               the_coords[start]:the_coords[end]] %>%
           max()
-        message("platypus-7")
         the_branch_max <-
           the_ggdend$segments$y %>%
           .[the_ggdend$segments$yend == the_branch_min] %>%
           max()
-        message("platypus-8")
         if (the_coords[start] == the_coords[end]) {
-          message("platypus-9")
           the_branch_max <- the_branch_min*1.1
         }
 
