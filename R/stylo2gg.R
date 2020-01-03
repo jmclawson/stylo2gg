@@ -62,9 +62,11 @@
 #' In a principal components analysis, multiple circular
 #' highlights are available to contrast sets; on a dendrogram,
 #' only one category can be highlighted with a box.
+#' @param highlight.box On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram)
 #' @param highlight.nudge On a highlighted dendrogram,
 #' optionally define some extra space when a box overlaps the
 #' edge of a label.
+#' @param highlight.single Toggle (TRUE/FALSE) to determine whether a dendrogram's highlight should draw a single box for all of the items or individual boxes for each cluster. When using \strong{\code{highlight}}, this setting will default to \code{TRUE}; when using \strong{\code{highlight.box}}, it will default too \code{FALSE}.
 #' @param black Cast the color of one category (defined by its
 #' number) as black. This setting is ideal to contrast a group
 #' for printing in black and white.
@@ -76,6 +78,7 @@
 #' \strong{\code{viz = "CA"}}. Change to \code{TRUE} to show
 #' a distance axis for the dendrogram in a cluster analysis.
 #' @param legend Show or hide the legend with \code{TRUE} or \code{FALSE}.
+#' @param show.zero Toggle (TRUE / FALSE) for leaving space below the lowest distance to indicate zero
 #'
 #' @details
 #' Because \code{stylo2gg} builds on \code{ggplot2}, almost all
@@ -100,7 +103,8 @@ stylo2gg <- function(df, viz, num.features,
                      invert.x = FALSE, invert.y = FALSE,
                      scaling = FALSE, distance.measure, linkage,
                      horiz = TRUE, axis.labels = FALSE,
-                     highlight.nudge) {
+                     highlight.nudge, highlight.single,
+                     show.zero, highlight.box = NULL) {
   library(dendextend)
   library(ggplot2)
   library(dplyr)
@@ -168,6 +172,13 @@ stylo2gg <- function(df, viz, num.features,
     } else if (viz == "CA") {
       if (missing(axis.labels)) {
         axis.labels <- TRUE
+      }
+      if(missing(show.zero)) {
+        if (!missing(axis.labels) && axis.labels) {
+          show.zero <- TRUE
+        } else {
+          show.zero <- FALSE
+        }
       }
       if (missing(distance.measure)) {
         the_dist <- as.character(stylo.default.settings()$distance.measure)
@@ -312,13 +323,35 @@ stylo2gg <- function(df, viz, num.features,
                         title, caption, black, the_caption,
                         scaling, invert.x, invert.y)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
+    if (missing(highlight.single) && !is.null(highlight)){
+      highlight.single <- TRUE
+    }
+    if (missing(highlight.single) && !is.null(highlight.box)){
+      highlight.single <- FALSE
+    }
     the_plot <- s2g_hc(df_z, df, df_a, the_distance,
                        highlight, title, caption, the_caption,
                        labeling, classing, linkage, the_class,
                        highlight.nudge, num_shapes, my_shapes,
                        shapes, legend, horiz, axis.labels,
-                       black, distance.measure)
+                       show.zero, highlight.box,
+                       black, distance.measure, highlight.single
+    )
   }
+
+  if (!missing(title)) {
+    if (!is.expression(my_title)) {
+      if (title == "") {
+        title = NULL
+      }
+    }
+  }
+
+  if (!is.null(title)) {
+    the_plot <- the_plot +
+      ggtitle(title)
+  }
+
   suppressWarnings(print(the_plot))
   }
 
@@ -397,7 +430,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                  show.legend = legend) +
       scale_shape_manual(values = my_shapes)
 
-    the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
+    # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
   } else if (shapes) {
     if (missing(legend)) {
@@ -410,7 +443,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                      color = class),
                  show.legend = legend)
 
-    the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
+    # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
     the_plot <- the_plot +
       geom_text_repel(aes(label = labeling,
@@ -422,7 +455,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       legend <- TRUE
     }
 
-    the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
+    # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
     the_plot <- the_plot +
       geom_text(aes(label = labeling,
@@ -430,7 +463,41 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     group = class),
                 show.legend = legend)
   }
+  # the_plot <- s2g_highlight(the_plot,
+  #                           df_pca = df_pca,
+  #                           highlight = highlight)
 
+  if (!is.null(highlight)) {
+    h <- highlight
+
+    silly_guides <-
+      rep(0, df_pca$class %>%
+            unique() %>%
+            length()
+      )
+
+    silly_guides[h] <- 1
+
+    the_plot <- the_plot +
+      ggalt::geom_encircle(data = df_pca[df_pca$class %in% unique(df_pca$class)[h],],
+                           aes(color = class),
+                           show.legend = FALSE) +
+      geom_rect(data = df_pca[df_pca$class %in% unique(df_pca$class)[h],],
+                aes(xmin = 0, xmax = 0,
+                    ymin = 0, ymax = 0,
+                    color = class),
+                fill = NA) +
+      geom_rect(data = df_pca[df_pca$class %in% unique(df_pca$class)[h],],
+                aes(xmin = 0, xmax = 0,
+                     ymin = 0, ymax = 0),
+                color = "gray", fill = NA,
+                show.legend = FALSE) +
+      guides(
+        color = guide_legend(
+          override.aes = list(linetype = silly_guides)
+        )
+      )
+  }
 
   if (!is.null(black)) {
     the_colors <- gg_color(num_shapes)
@@ -473,6 +540,12 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   the_plot <- the_plot +
       theme(legend.position = legend_position)
 
+  if (caption) {
+    if (!is.null(the_caption)) {
+      the_plot <- the_plot +
+        labs(caption = the_caption)
+    }
+  }
   return(the_plot)
 }
 
@@ -481,7 +554,9 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                    labeling, classing, linkage, the_class,
                    highlight.nudge, num_shapes, my_shapes,
                    shapes, legend, horiz, axis.labels,
-                   black, distance.measure){
+                   show.zero, highlight.box,
+                   black, distance.measure, highlight.single
+                   ){
   if (missing(labeling)) {
     labeling <- 0
   } else {
@@ -590,10 +665,22 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
   the_ggdend <- the_dend %>%
     as.ggdend()
 
-  the_ggdend$labels$class <- the_ggdend$labels$label %>%
-    as.character() %>%
-    strsplit("_") %>%
-    sapply(`[`,1)
+  # the_ggdend$labels$class <- the_ggdend$labels$label %>%
+  #   as.character() %>%
+  #   strsplit("_") %>%
+  #   sapply(`[`,1)
+
+  match_df <- df_a$table.with.all.freqs
+  the_ggdend_a <<- the_ggdend
+  the_ggdend_a$df_a <<- match_df
+
+  the_ggdend$labels <-
+    the_ggdend$labels[match(rownames(match_df),
+        gsub(" ","",as.character(the_ggdend$labels$label))),]
+
+  the_ggdend_b <<- the_ggdend
+
+  the_ggdend$labels$class <- the_class
 
   if (!missing(labeling)) {
     if (is.numeric(labeling)) {
@@ -640,18 +727,20 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
               show.legend = text_legend)
 
   if (shapes) {
-
     the_gplot <- the_gplot +
       geom_point(data = the_ggdend$labels,
-                 aes(x = x, y = y + point_shift, shape = class, color = class)) +
+                 aes(x = x,
+                     y = y + point_shift,
+                     shape = class,
+                     color = class)) +
       scale_shape_manual(values = my_shapes)
   }
 
   if (horiz && !axis.labels) {
     the_gplot <- the_gplot +
       coord_flip() +
-      scale_y_reverse(breaks = function(n) seq(0,
-                                               round_any(max(n),0.5),
+      scale_y_reverse(breaks = function(n) seq(round_any(min(n),0.5, ceiling),
+                                               round_any(max(n),0.5, ceiling),
                                                0.5))
   }
 
@@ -670,20 +759,22 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     # the_plot <- the_dend %>% ggplot(horiz = horiz)
 
     if (!horiz) {
+      top_limit <- the_ggdend$segments$y %>% max()
       the_plot <- the_plot +
         labs(y = paste0(the_distance,"\n")) +
         theme(axis.title.y = element_text(color = "black", angle = 90),
               axis.line.y = element_line(color = "black", size = 0.5),
               axis.ticks.y = element_line(color = "black", size = 0.5),
               axis.text.y = element_text(colour = "black")) +
-        scale_y_continuous(breaks = function(n) seq(0,
-                                                    round_any(max(n),0.5),
-                                                    0.5))
+        scale_y_continuous(breaks = function(n) seq(round_any(min(n),0.5, ceiling),
+                                                 round_any(max(n),0.5, ceiling),
+                                                 0.5))
+        # expand_limits(y = c(top_limit,0))
+
       if ("lemon" %in% rownames(installed.packages())) {
         # library(lemon)
         the_plot <- the_plot +
-          coord_capped_cart(left = "both") +
-          expand_limits(y = 0)
+          coord_capped_cart(left = "both")
       }
     } else if (horiz) {
       if (caption && !is.null(the_caption)) {
@@ -693,6 +784,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
         the_caption <- NULL
       }
 
+      top_limit <- the_ggdend$segments$y %>% max()
       the_plot <- the_plot +
         labs(y = the_distance) +
         theme(axis.title.x = element_text(color = "black"),
@@ -704,17 +796,20 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
         # library(lemon)
         the_plot <- the_plot +
           coord_capped_flip(bottom="both") +
-          scale_y_reverse(breaks = function(n) seq(0,
-                                                   round_any(max(n),0.5),
-                                                   0.5)) +
-          expand_limits(y = 0)
+          scale_y_reverse(breaks = seq(-1,
+                              round_any(top_limit,0.5, ceiling),
+                              0.5))
       } else {
         the_gplot <- the_gplot +
           coord_flip() +
           scale_y_reverse(breaks = function(n) seq(0,
-                                                   round_any(max(n),0.5),
+                                                   round_any(max(n),0.5, ceiling),
                                                    0.5))
       }
+    }
+    if (show.zero) {
+      the_plot <- the_plot +
+        expand_limits(y = 0)
     }
 
   } else {
@@ -827,16 +922,14 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
   the_ggdend$segments$kind[the_ggdend$segments$x == the_ggdend$segments$xend] <- "horizontal"
   the_ggdend$segments$kind[the_ggdend$segments$y==the_ggdend$segments$yend] <- "vertical"
 
-  the_plot <- s2g_highlight_rect(the_plot = the_plot,
-                                 the_ggdend = the_ggdend,
-                                 highlight = highlight,
-                                 the_colors = the_colors,
-                                 highlight.nudge)
-
-  if (!missing(title)) {
-    if (title == "") {
-      title = NULL
-    }
+  if(!is.null(highlight) |!is.null(highlight.box)) {
+    the_plot <- s2g_highlight_rect(the_plot = the_plot,
+                                   the_ggdend = the_ggdend,
+                                   highlight = highlight,
+                                   the_colors = the_colors,
+                                   highlight.nudge,
+                                   highlight.single,
+                                   highlight.box)
   }
 
   if (caption) {
@@ -846,10 +939,6 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     }
   }
 
-  if (!is.null(title)) {
-    the_plot <- the_plot +
-      ggtitle(title)
-  }
   return(the_plot)
 }
 
@@ -858,16 +947,15 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
 s2g_highlight <- function(the_plot, df_pca, highlight) {
   if (!is.null(highlight)) {
 
-    # add highlight for single-item classes
     for (h in 1:length(highlight)) {
-    if (nrow(df_pca[df_pca$class == unique(df_pca$class)[highlight[h]],])==1){
-      the_plot <- the_plot +
-        geom_point(data = df_pca[df_pca$class == unique(df_pca$class)[highlight[h]],],
-                   aes(color = class), size = 4, pch=21, stroke=1,
-                   show.legend = FALSE)
-    } }
-
-    for (h in 1:length(highlight)) {
+      # add highlight for single-item classes
+      if (nrow(df_pca[df_pca$class == unique(df_pca$class)[highlight[h]],])==1){
+        the_plot <- the_plot +
+          geom_point(data = df_pca[df_pca$class == unique(df_pca$class)[highlight[h]],],
+                     aes(color = class), size = 4, pch=21, stroke=1,
+                     show.legend = FALSE)
+      }
+      # add highlights for all other classes
       the_plot <- the_plot +
         stat_density_2d(data = df_pca[df_pca$class == unique(df_pca$class)[highlight[h]],],
                         na.rm = FALSE,
@@ -887,125 +975,102 @@ s2g_highlight <- function(the_plot, df_pca, highlight) {
   return(the_plot)
 }
 
-s2g_highlight_rect <- function(the_plot,
-                               the_ggdend,
-                               highlight,
-                               the_colors,
-                               highlight.nudge) {
-  if (!is.null(highlight)) {
+s2g_highlight_rect <- function(the_plot = the_plot,
+                               the_ggdend = the_ggdend,
+                               highlight = highlight,
+                               the_colors = the_colors,
+                               highlight.nudge,
+                               highlight.single,
+                               highlight.box) {
+  the_ggdend <<- the_ggdend
+
+  if(!is.null(highlight)) {
+
     h <- highlight
     tc <- sort(unique(the_ggdend$labels$class))[h]
 
+    the_coords <-
+      the_ggdend$labels[the_ggdend$labels$class == tc,"x"]
+    the_coords <- sort(the_coords)
+
     if (length(h) > 1) {
       message("Dendrograms can only highlight one class at a time. Use the geom_rect() function from ggplot2 to highlight manually.")
-    } else {
+      }
+    }
 
-      the_coords <- the_ggdend$labels[the_ggdend$labels$class == tc,"x"]
+  if (!is.null(highlight.box)) {
+    the_coords <- sort(highlight.box)
+    }
 
-      start <- c(1, which(diff(the_coords) != 1 & diff(the_coords) != 0) + 1)
-      end <- c(start - 1, length(the_coords))
-      end <- end[end > 0]
+  start <- c(1, which(diff(the_coords) != 1 & diff(the_coords) != 0) + 1)
+  end <- c(start - 1, length(the_coords))
+  end <- end[end > 0]
 
-      if (length(start) > 1) {
-        the_branch_max <- c()
-        the_branch_min <- c()
-        for (i in 1:length(start)) {
-          from1 <- the_ggdend$labels$y
-          here <- the_coords[start[i]]
-          there <- the_coords[end[i]]
-          the_branch_min[i] <-
-            from1[the_ggdend$labels$x %in% here:there] %>%
-            max()
+  the_coords <<- the_coords
+  start <<- start
+  end <<- end
 
-          from2 <- the_ggdend$segments$y
-          the_branch_max[i] <-
-            from2[the_ggdend$segments$yend ==
-                the_branch_min[i]] %>%
-            max()
+  if (highlight.single) {
+    start <- 1
+    end <- length(the_coords)
+    }
 
-          if (here == there) {
-            the_branch_max[i] <- the_branch_min[i]*1.1
-          }
+  if (length(start) > 1) {
+    the_branch_max <- c()
+    the_branch_max <<- c()
+    the_branch_min <- c()
+    the_branch_min <<- c()
+    for (i in 1:length(start)) {
+      # from1 <- the_ggdend$labels$y
+      bottom <- the_coords[start[i]]
+      top <- the_coords[end[i]]
+      from1 <- the_ggdend$segments
+      this_tab <- from1$y[from1$x >= bottom &
+                          from1$x <= top] %>%
+        table()
+      this_tab <<- this_tab
+      the_branch_min[i] <-
+        this_tab[this_tab == max(this_tab)] %>%
+        names() %>%
+        as.numeric() %>%
+        max()
 
-          if (!missing(highlight.nudge)) {
-            h.n <- highlight.nudge
-          } else {
-            h.n <- 0
-          }
-          the_rect <-
-            data.frame(xmin = the_coords[start[i]] - 0.5,
-                       xmax = the_coords[end[i]] + 0.5,
-                       ymin = -0.1 - h.n,
-                       ymax = mean(c(the_branch_min[i],
-                                     the_branch_max[i])),
-                       class = tc)
-          silly_guides <-
-            rep(0, the_ggdend$labels$class %>%
-                  unique() %>%
-                  length()
-                )
+      the_branch_min[i] <-
+        from1$y[round(from1$y,5) ==
+                round(the_branch_min[i],5)] %>%
+        max(na.rm = TRUE)
 
-          silly_guides[h] <- 2
+      the_branch_min[i] <<- the_branch_min[i]
 
-          the_plot <- the_plot +
-            geom_rect(data = the_rect,
-                      aes(xmin = xmin,
-                          xmax = xmax,
-                          ymin = ymin,
-                          ymax = ymax,
-                          color = class),
-                      fill = "white", alpha = 0, linetype = 2,
-                      show.legend = TRUE) +
-            guides(
-              color = guide_legend(
-                override.aes = list(linetype = silly_guides)
-                )
-              )
-          # scale_linetype_manual(values = 2)
-        }
+      from2 <- the_ggdend$segments$y
+      the_branch_max[i] <-
+        from2[the_ggdend$segments$yend ==
+              the_branch_min[i]] %>%
+        max()
+
+      if (top == bottom) {
+        the_branch_max[i] <- the_branch_min[i]*1.1
+      }
+
+      if (!missing(highlight.nudge)) {
+        h.n <- highlight.nudge
       } else {
-        the_branch_min <-
-          the_ggdend$labels$y %>%
-          .[the_ggdend$labels$x %in%
-              the_coords[start]:the_coords[end]] %>%
-          max()
-        the_branch_max <-
-          the_ggdend$segments$y %>%
-          .[the_ggdend$segments$yend == the_branch_min] %>%
-          max()
-        if (the_coords[start] == the_coords[end]) {
-          the_branch_max <- the_branch_min*1.1
-        }
+        h.n <- 0
+      }
+      the_rect <-
+        data.frame(xmin = the_coords[start[i]] - 0.5,
+                   xmax = the_coords[end[i]] + 0.5,
+                   ymin = -0.1 - h.n,
+                   ymax = mean(c(the_branch_min[i],
+                                 the_branch_max[i])))
 
-        label_widths <- the_ggdend$labels$labels %>%
-          strwidth("inches")
-
-        the_ggdend$labels$label_widths <- label_widths
-
-        the_ggdend$labels$label_ymin <-
-          the_ggdend$labels$y -
-          (the_ggdend$labels$label_widths / 2)
-
-        # label_ymin <- min(the_ggdend$labels$label_ymin)
-        if (!missing(highlight.nudge)) {
-          h.n <- highlight.nudge
-        } else {
-          h.n <- 0
-        }
-
-        label_ymin <- -0.1 - h.n
-
-        the_rect <- data.frame(xmin = the_coords[start] - 0.5,
-                               xmax = the_coords[end] + 0.5,
-                               ymin = label_ymin,
-                               ymax = mean(c(the_branch_min,
-                                             the_branch_max)),
-                               class = tc)
-
-        silly_guides <- rep(0, the_ggdend$labels$class %>%
-                              unique() %>%
-                              length())
-
+      if (!is.null(highlight)){
+        the_rect$class <- tc
+        silly_guides <-
+          rep(0, the_ggdend$labels$class %>%
+                unique() %>%
+                length()
+          )
         silly_guides[h] <- 2
 
         the_plot <- the_plot +
@@ -1015,18 +1080,118 @@ s2g_highlight_rect <- function(the_plot,
                         ymin = ymin,
                         ymax = ymax,
                         color = class),
-                    fill = "white", alpha = 0, linetype = 2) +
+                    fill = "white", alpha = 0, linetype = 2,
+                    show.legend = TRUE) +
           guides(
             color = guide_legend(
-              override.aes = list(
-                linetype = silly_guides)
-              )
+              override.aes = list(linetype = silly_guides)
             )
+          )
+      } else { #when using highlight.box
+        the_plot <- the_plot +
+          geom_rect(data = the_rect,
+                    aes(xmin = xmin,
+                        xmax = xmax,
+                        ymin = ymin,
+                        ymax = ymax),
+                    color = "gray50",
+                    fill = "white", alpha = 0, linetype = 2,
+                    show.legend = FALSE)
       }
+
+      }
+  } else {
+    from1 <- the_ggdend$segments
+    bottom <- the_coords[start]
+    top <- the_coords[end]
+
+    this_tab <- from1$y[from1$x >= bottom &
+                        from1$x <= top] %>%
+        table()
+    the_branch_min <-
+        # this_tab %>%
+        this_tab[this_tab == 4] %>%
+        names() %>%
+        as.numeric() %>%
+        max()
+
+    the_branch_min <- from1$y[round(from1$y,5) ==
+                              round(the_branch_min,5)]
+
+        # }
+
+    the_branch_max <-
+      from1$y[from1$yend == the_branch_min] %>%
+      max()
+
+    if (the_coords[start] == the_coords[end]) {
+      the_branch_max <- the_branch_min*1.1
+    }
+
+    the_branch_min <<- the_branch_min
+    the_branch_max <<- the_branch_max
+
+    label_widths <- the_ggdend$labels$labels %>%
+      strwidth("inches")
+
+    the_ggdend$labels$label_widths <- label_widths
+
+    the_ggdend$labels$label_ymin <-
+      the_ggdend$labels$y -
+      (the_ggdend$labels$label_widths / 2)
+
+    # label_ymin <- min(the_ggdend$labels$label_ymin)
+    if (!missing(highlight.nudge)) {
+      h.n <- highlight.nudge
+    } else {
+      h.n <- 0
+    }
+
+    label_ymin <- -0.1 - h.n
+
+    the_rect <- data.frame(xmin = the_coords[start] - 0.5,
+                           xmax = the_coords[end] + 0.5,
+                           ymin = label_ymin,
+                           ymax = mean(c(the_branch_min,
+                                         the_branch_max)))
+
+    if (!is.null(highlight)) {
+      the_rect$class <- tc
+      silly_guides <-
+        rep(0, the_ggdend$labels$class %>%
+              unique() %>%
+              length()
+        )
+      silly_guides[h] <- 2
+
+      the_plot <- the_plot +
+        geom_rect(data = the_rect,
+                  aes(xmin = xmin,
+                      xmax = xmax,
+                      ymin = ymin,
+                      ymax = ymax,
+                      color = class),
+                  fill = "white", alpha = 0, linetype = 2,
+                  show.legend = TRUE) +
+        guides(
+          color = guide_legend(
+            override.aes = list(linetype = silly_guides)
+          )
+        )
+    } else { #when using highlight.box
+      the_plot <- the_plot +
+        geom_rect(data = the_rect,
+                  aes(xmin = xmin,
+                      xmax = xmax,
+                      ymin = ymin,
+                      ymax = ymax),
+                  color = "gray50",
+                  fill = "white", alpha = 0, linetype = 2,
+                  show.legend = FALSE)
     }
   }
   return(the_plot)
-  }
+}
 
 gg_color <- function(n) {
   hues = seq(15, 375, length = n + 1)

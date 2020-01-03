@@ -23,7 +23,10 @@ stylo2gg(
   linkage,
   horiz = TRUE,
   axis.labels = FALSE,
-  highlight.nudge
+  highlight.nudge,
+  highlight.single,
+  show.zero,
+  highlight.box = NULL
 )
 }
 \arguments{
@@ -121,6 +124,12 @@ a distance axis for the dendrogram in a cluster analysis.}
 \item{highlight.nudge}{On a highlighted dendrogram,
 optionally define some extra space when a box overlaps the
 edge of a label.}
+
+\item{highlight.single}{Toggle (TRUE/FALSE) to determine whether a dendrogram's highlight should draw a single box for all of the items or individual boxes for each cluster. When using \strong{\code{highlight}}, this setting will default to \code{TRUE}; when using \strong{\code{highlight.box}}, it will default too \code{FALSE}.}
+
+\item{show.zero}{Toggle (TRUE / FALSE) for leaving space below the lowest distance to indicate zero}
+
+\item{highlight.box}{On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram)}
 }
 \description{
 Visualize \code{stylo} data with \code{ggplot2}.
