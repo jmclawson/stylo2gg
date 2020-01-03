@@ -671,14 +671,14 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
   #   sapply(`[`,1)
 
   match_df <- df_a$table.with.all.freqs
-  the_ggdend_a <<- the_ggdend
-  the_ggdend_a$df_a <<- match_df
+  # the_ggdend_a <<- the_ggdend
+  # the_ggdend_a$df_a <<- match_df
 
   the_ggdend$labels <-
     the_ggdend$labels[match(rownames(match_df),
         gsub(" ","",as.character(the_ggdend$labels$label))),]
 
-  the_ggdend_b <<- the_ggdend
+  # the_ggdend_b <<- the_ggdend
 
   the_ggdend$labels$class <- the_class
 
@@ -982,7 +982,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                                highlight.nudge,
                                highlight.single,
                                highlight.box) {
-  the_ggdend <<- the_ggdend
+  # the_ggdend <<- the_ggdend
 
   if(!is.null(highlight)) {
 
@@ -1006,9 +1006,9 @@ s2g_highlight_rect <- function(the_plot = the_plot,
   end <- c(start - 1, length(the_coords))
   end <- end[end > 0]
 
-  the_coords <<- the_coords
-  start <<- start
-  end <<- end
+  # the_coords <<- the_coords
+  # start <<- start
+  # end <<- end
 
   if (highlight.single) {
     start <- 1
@@ -1017,9 +1017,9 @@ s2g_highlight_rect <- function(the_plot = the_plot,
 
   if (length(start) > 1) {
     the_branch_max <- c()
-    the_branch_max <<- c()
+    # the_branch_max <<- c()
     the_branch_min <- c()
-    the_branch_min <<- c()
+    # the_branch_min <<- c()
     for (i in 1:length(start)) {
       # from1 <- the_ggdend$labels$y
       bottom <- the_coords[start[i]]
@@ -1028,7 +1028,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
       this_tab <- from1$y[from1$x >= bottom &
                           from1$x <= top] %>%
         table()
-      this_tab <<- this_tab
+      # this_tab <<- this_tab
       the_branch_min[i] <-
         this_tab[this_tab == max(this_tab)] %>%
         names() %>%
@@ -1040,7 +1040,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                 round(the_branch_min[i],5)] %>%
         max(na.rm = TRUE)
 
-      the_branch_min[i] <<- the_branch_min[i]
+      # the_branch_min[i] <<- the_branch_min[i]
 
       from2 <- the_ggdend$segments$y
       the_branch_max[i] <-
@@ -1128,8 +1128,8 @@ s2g_highlight_rect <- function(the_plot = the_plot,
       the_branch_max <- the_branch_min*1.1
     }
 
-    the_branch_min <<- the_branch_min
-    the_branch_max <<- the_branch_max
+    # the_branch_min <<- the_branch_min
+    # the_branch_max <<- the_branch_max
 
     label_widths <- the_ggdend$labels$labels %>%
       strwidth("inches")
