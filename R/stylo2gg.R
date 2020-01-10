@@ -12,6 +12,13 @@
 #' analysis. By default, \code{stylo}'s settings are used, but
 #' it is easy here limit the number to a smaller set, ordered
 #' by frequency
+#' @param num.loadings The number of features to show as
+#' vectors in a principal components analysis. By default,
+#' loadings are not shown unless \code{stylo}'s setting for
+#' \code{pca.visual.flavour} is set to \code{"loadings"}; at
+#' this time, it defaults to the full number of features. It's
+#' probably most revealing to choose a smaller number, so that
+#' only the most significant features are plotted.
 #' @param labeling Defines how to label items: if setting a
 #' character vector, define one string for each item in
 #' \strong{df}; if setting a numeric vector (e.g, \code{1} or
@@ -62,7 +69,8 @@
 #' In a principal components analysis, multiple circular
 #' highlights are available to contrast sets; on a dendrogram,
 #' only one category can be highlighted with a box.
-#' @param highlight.box On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram)
+#' @param highlight.box On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram); it might be helpful to toggle the \strong{\code{count.labels}} parameter to
+#' \code{TRUE} to avoid having to count large data sets.
 #' @param highlight.nudge On a highlighted dendrogram,
 #' optionally define some extra space when a box overlaps the
 #' edge of a label.
@@ -79,6 +87,7 @@
 #' a distance axis for the dendrogram in a cluster analysis.
 #' @param legend Show or hide the legend with \code{TRUE} or \code{FALSE}.
 #' @param show.zero Toggle (TRUE / FALSE) for leaving space below the lowest distance to indicate zero
+#' @param count.labels Toggle (TRUE / FALSE) to show or hide counting numbers at the beginning of labels on a dendrogram. Useful for manually setting a \strong{\code{highlight.box}} when constructing a plot, but probably not ideal for the final version of a dendrogram. Defaults to FALSE
 #'
 #' @details
 #' Because \code{stylo2gg} builds on \code{ggplot2}, almost all
@@ -96,8 +105,9 @@
 #' @import dendextend ggplot2 dplyr ggrepel lemon
 #' @export stylo2gg
 
-stylo2gg <- function(df, viz, num.features,
+stylo2gg <- function(df, viz, num.features, num.loadings,
                      title = NULL, caption = FALSE,
+                     count.labels = FALSE,
                      legend, black = NULL, highlight = NULL,
                      labeling, classing, shapes = FALSE,
                      invert.x = FALSE, invert.y = FALSE,
@@ -129,6 +139,14 @@ stylo2gg <- function(df, viz, num.features,
       } else {
         viz <- "CA"
       }
+  }
+
+  if (missing(num.loadings)) {
+    if ("pca.visual.flavour" %in% names(my_call)) {
+      if (my_call$pca.visual.flavour == "loadings") {
+        num.loadings <- num.features
+      }
+    }
   }
 
   legend_position <- "right"
@@ -321,7 +339,8 @@ stylo2gg <- function(df, viz, num.features,
                         shapes, legend, highlight,
                         legend_position, num_shapes, my_shapes,
                         title, caption, black, the_caption,
-                        scaling, invert.x, invert.y)
+                        scaling, invert.x, invert.y,
+                        num.loadings)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
     if (missing(highlight.single) && !is.null(highlight)){
       highlight.single <- TRUE
@@ -334,7 +353,7 @@ stylo2gg <- function(df, viz, num.features,
                        labeling, classing, linkage, the_class,
                        highlight.nudge, num_shapes, my_shapes,
                        shapes, legend, horiz, axis.labels,
-                       show.zero, highlight.box,
+                       show.zero, highlight.box, count.labels,
                        black, distance.measure, highlight.single
     )
   }
@@ -352,15 +371,17 @@ stylo2gg <- function(df, viz, num.features,
       ggtitle(title)
   }
 
-  suppressWarnings(print(the_plot))
+  return(the_plot)
   }
 
 s2g_pca <- function(df_z, df_a, the_class, labeling,
                     shapes, legend, highlight,
                     legend_position, num_shapes, my_shapes,
                     title, caption, black, the_caption,
-                    scaling, invert.x, invert.y){
+                    scaling, invert.x, invert.y, num.loadings){
   df_pca <- prcomp(df_z, scale. = scaling)
+  pca_list <- df_pca
+  df_pca_rotation <- df_pca$rotation
 
   pc_variance <- summary(df_pca)$importance[2,1:2]
 
@@ -396,9 +417,16 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
 
   the_plot <- df_pca %>%
     ggplot(aes(PC1,
-               PC2)) +
-    geom_hline(yintercept = 0, color = "gray") +
-    geom_vline(xintercept = 0, color = "gray")
+               PC2))
+  if (missing(num.loadings) | num.loadings < 1) {
+    the_plot <- the_plot +
+      geom_hline(yintercept = 0, color = "gray") +
+      geom_vline(xintercept = 0, color = "gray")
+  } else {
+    the_plot <- s2g_loadings(the_plot,
+                             pca_list,
+                             num.loadings)
+  }
 
   if (!missing(labeling)) {
     if (is.numeric(labeling)) {
@@ -486,6 +514,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                 aes(xmin = 0, xmax = 0,
                     ymin = 0, ymax = 0,
                     color = class),
+                show.legend = legend,
                 fill = NA) +
       geom_rect(data = df_pca[df_pca$class %in% unique(df_pca$class)[h],],
                 aes(xmin = 0, xmax = 0,
@@ -549,12 +578,93 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   return(the_plot)
 }
 
+s2g_loadings <- function(the_plot,
+                         pca_list,
+                         # df_pca,
+                         # df_pca_rotation,
+                         num.loadings) {
+  df_pca <- as.data.frame(pca_list$x)
+  df_pca_rotation <- as.data.frame(pca_list$rotation)
+
+  max_x <- max(df_pca$PC1)
+  min_x <- min(df_pca$PC1)
+  max_y <- max(df_pca$PC2)
+  min_y <- min(df_pca$PC2)
+
+  df_rotation <- as.data.frame(df_pca_rotation)
+  df_rotation_abs <-
+    data.frame(PC1 = df_rotation$PC1 %>%
+                 as.numeric() %>%
+                 abs(),
+               PC2 = df_rotation$PC2 %>%
+                 as.numeric() %>%
+                 abs(),
+               word = rownames(df_rotation),
+               stringsAsFactors = FALSE)
+
+  pc1_words <-
+    df_rotation_abs$word[order(df_rotation_abs$PC1,
+                                decreasing = TRUE)]
+
+  pc2_words <-
+    df_rotation_abs$word[order(df_rotation_abs$PC2,
+                                decreasing = TRUE)]
+
+  loading_words <- c(pc1_words[1:num.loadings],
+                     pc2_words[1:num.loadings]) %>%
+    unique()
+
+  loadings_df <-
+    df_rotation[rownames(df_rotation) %in% loading_words,1:2]
+
+  # Figure out which vectors are longest
+  loadings_df[,3] <-
+    (loadings_df[,1])^2 + (loadings_df[,2])^2
+
+  # order the rows by length
+  loadings_df <- loadings_df[order(loadings_df[,3],
+                                   decreasing = TRUE),]
+
+  # limit number of rows to num.loadings
+  if (length(loading_words) > num.loadings) {
+    loadings_df <- loadings_df[1:num.loadings,]
+  }
+
+  max_pc1 <- max(df_rotation$PC1)
+  min_pc1 <- min(df_rotation$PC1)
+  max_pc2 <- max(df_rotation$PC2)
+  min_pc2 <- min(df_rotation$PC2)
+
+  loadings_df_scaled <- loadings_df[,1:2]
+  loadings_df_scaled[,1] <- loadings_df_scaled[,1] *
+    (max_x - min_x)/(max_pc1 - min_pc1)
+  loadings_df_scaled[,2] <- loadings_df_scaled[,2] *
+    (max_y - min_y)/(max_pc2 - min_pc2)
+
+  the_plot <- the_plot +
+    geom_segment(data = loadings_df_scaled,
+                 aes(x = 0,
+                     y = 0,
+                     xend = PC1 * 0.72,
+                     yend = PC2 * 0.72),
+                 arrow = arrow(length = unit(0.2,"cm")),
+                 color = "gray") +
+    geom_text(data = loadings_df_scaled,
+              aes(x = PC1*0.75,
+                  y = PC2*0.75,
+                  label = rownames(loadings_df)),
+              size = 5,
+              color = "darkgray")
+
+  return(the_plot)
+}
+
 s2g_hc <- function(df_z, df, df_a, the_distance,
                    highlight, title, caption, the_caption,
                    labeling, classing, linkage, the_class,
                    highlight.nudge, num_shapes, my_shapes,
                    shapes, legend, horiz, axis.labels,
-                   show.zero, highlight.box,
+                   show.zero, highlight.box, count.labels,
                    black, distance.measure, highlight.single
                    ){
   if (missing(labeling)) {
@@ -586,7 +696,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     df <- df_z
   }
 
-  if (labeling != 0 && missing(legend)){
+  if (labeling != 0 && missing(legend)) {
     legend <- TRUE
   }
 
@@ -720,11 +830,22 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     text_legend <- legend
   }
 
-  the_gplot <- the_gplot +
-    geom_text(data = the_ggdend$labels,
+  if(count.labels){
+    the_gplot <- the_gplot +
+      geom_text(data = the_ggdend$labels,
+              aes(x = x,
+                  y = y,
+                  label = paste0(x, ". ", labels),
+                  color = class),
+              angle = the_angle, hjust = the_hjust, nudge_y = the_nudge,
+              show.legend = text_legend)
+  } else {
+    the_gplot <- the_gplot +
+      geom_text(data = the_ggdend$labels,
               aes(x = x, y = y, label = labels, color = class),
               angle = the_angle, hjust = the_hjust, nudge_y = the_nudge,
               show.legend = text_legend)
+  }
 
   if (shapes) {
     the_gplot <- the_gplot +
@@ -816,100 +937,6 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     # the_plot <- the_dend %>% ggplot(horiz = horiz)
   }
 
-  # if (legend && horiz) {
-  #   the_max_x <<- ggplot_build(the_plot)$layout$panel_scales_x[[1]]$range$range[2]
-  #   the_min_y <<- -1 * ggplot_build(the_plot)$layout$panel_scales_y[[1]]$range$range[1]
-  #   the_max_y <<- -1 * ggplot_build(the_plot)$layout$panel_scales_y[[1]]$range$range[2]
-  #
-  #   legend_rows <- ceiling(length(unique(the_class)) / legend_cols)
-  #
-  #   legend_max_y <<- the_min_y
-  #   legend_min_y <<- the_min_y*.05
-  #
-  #   legend_range_y <<- c()
-  #   for (i in 1:legend_cols) {
-  #     this_col <- i * (mean(legend_max_y - legend_min_y) / legend_cols)
-  #     legend_range_y <<- c(legend_range_y, rep(this_col, legend_rows))
-  #   }
-  #
-  #   x_range_max <- the_max_x/2 + length(unique(the_class))/2 #17
-  #   x_range_min <- the_max_x/2 - length(unique(the_class))/2
-  #
-  #   fake_legend <<- data.frame(class = unique(the_class),
-  #                             colors = the_colors,
-  #                             shapes = the_newshape,
-  #                             x = rep_len(rev(seq(the_max_x + 1,
-  #                                                 the_max_x + legend_rows,
-  #                                                 1)),
-  #                                         length(unique(the_class))),
-  #                             y = c(rep_len(rev(legend_range_y),
-  #                                           length(unique(the_class)))))
-  #
-  #   the_plot <- the_plot +
-  #     geom_point(data = fake_legend,
-  #                aes(x = x,
-  #                    y = y,
-  #                    color = colors,
-  #                    shape = the_newshape),
-  #                show.legend = FALSE) +
-  #     geom_text(data = fake_legend,
-  #                aes(x = x,
-  #                    y = y - 0.1,
-  #                    label = class),
-  #               hjust = 0)
-  #
-  # } else if (legend && !horiz) {
-  #   vert_unit <- 0.2
-  #
-  #   the_min_x <- ggplot_build(the_plot)$layout$panel_scales_x[[1]]$range$range[1]
-  #   the_max_x <- ggplot_build(the_plot)$layout$panel_scales_x[[1]]$range$range[2]
-  #   the_min_y <- ggplot_build(the_plot)$layout$panel_scales_y[[1]]$range$range[1]
-  #   the_max_y <- ggplot_build(the_plot)$layout$panel_scales_y[[1]]$range$range[2]
-  #
-  #   legend_rows <- ceiling(length(unique(the_class))/legend_cols)
-  #
-  #   legend_max_x <- the_max_x*.9
-  #   legend_min_x <- the_max_x*.1
-  #
-  #   legend_range_x <- c()
-  #   for (i in 1:legend_cols) {
-  #     this_col <- i * (mean(legend_max_x - legend_min_x) / legend_cols)
-  #     legend_range_x <- c(legend_range_x, rep(this_col, legend_rows))
-  #   }
-  #
-  #   # y_range_max <- the_max_y/2 + length(unique(the_class))/2 #17
-  #   # y_range_min <- the_max_y/2 - length(unique(the_class))/2
-  #
-  #   fake_legend <- data.frame(class = unique(the_class),
-  #                              colors = the_colors,
-  #                              shapes = the_newshape,
-  #                              y = rep_len(rev(seq(the_max_y + vert_unit,
-  #                                                  the_max_y + vert_unit * legend_rows,
-  #                                                  vert_unit)),
-  #                                          length(unique(the_class))),
-  #                              x = c(rep_len(legend_range_x,
-  #                                            length(unique(the_class)))))
-  #
-  #   the_plot <- the_plot +
-  #     geom_point(data = fake_legend,
-  #                aes(x = x,
-  #                    y = y,
-  #                    color = colors,
-  #                    shape = the_newshape),
-  #                show.legend = FALSE) +
-  #     geom_text(data = fake_legend,
-  #               aes(x = x + 0.1,
-  #                   y = y,
-  #                   label = class),
-  #               hjust = 0)
-  #
-  # }
-
-  # if (shapes) {
-  #   the_plot <- the_plot +
-  #     scale_shape_manual(values = rep(c(1, 3:11), length.out = num_shapes))
-  # }
-
   if (!is.null(black)) {
     the_colors <- gg_color(num_shapes)
 
@@ -929,7 +956,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                                    the_colors = the_colors,
                                    highlight.nudge,
                                    highlight.single,
-                                   highlight.box)
+                                   highlight.box, legend)
   }
 
   if (caption) {
@@ -981,7 +1008,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                                the_colors = the_colors,
                                highlight.nudge,
                                highlight.single,
-                               highlight.box) {
+                               highlight.box, legend) {
   # the_ggdend <<- the_ggdend
 
   if(!is.null(highlight)) {
@@ -1064,7 +1091,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                    ymax = mean(c(the_branch_min[i],
                                  the_branch_max[i])))
 
-      if (!is.null(highlight)){
+      if (!is.null(highlight)) {
         the_rect$class <- tc
         silly_guides <-
           rep(0, the_ggdend$labels$class %>%
@@ -1081,13 +1108,13 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                         ymax = ymax,
                         color = class),
                     fill = "white", alpha = 0, linetype = 2,
-                    show.legend = TRUE) +
+                    show.legend = legend) +
           guides(
             color = guide_legend(
               override.aes = list(linetype = silly_guides)
             )
           )
-      } else { #when using highlight.box
+      } else {#when using highlight.box
         the_plot <- the_plot +
           geom_rect(data = the_rect,
                     aes(xmin = xmin,
@@ -1098,8 +1125,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                     fill = "white", alpha = 0, linetype = 2,
                     show.legend = FALSE)
       }
-
-      }
+    }
   } else {
     from1 <- the_ggdend$segments
     bottom <- the_coords[start]
@@ -1172,13 +1198,13 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                       ymax = ymax,
                       color = class),
                   fill = "white", alpha = 0, linetype = 2,
-                  show.legend = TRUE) +
+                  show.legend = legend) +
         guides(
           color = guide_legend(
             override.aes = list(linetype = silly_guides)
           )
         )
-    } else { #when using highlight.box
+    } else {#when using highlight.box
       the_plot <- the_plot +
         geom_rect(data = the_rect,
                   aes(xmin = xmin,

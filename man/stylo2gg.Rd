@@ -8,8 +8,10 @@ stylo2gg(
   df,
   viz,
   num.features,
+  num.loadings,
   title = NULL,
   caption = FALSE,
+  count.labels = FALSE,
   legend,
   black = NULL,
   highlight = NULL,
@@ -45,6 +47,14 @@ analysis. By default, \code{stylo}'s settings are used, but
 it is easy here limit the number to a smaller set, ordered
 by frequency}
 
+\item{num.loadings}{The number of features to show as
+vectors in a principal components analysis. By default,
+loadings are not shown unless \code{stylo}'s setting for
+\code{pca.visual.flavour} is set to \code{"loadings"}; at
+this time, it defaults to the full number of features. It's
+probably most revealing to choose a smaller number, so that
+only the most significant features are plotted.}
+
 \item{title}{The title that will go on the top of a chart.
 This value is inherited from \code{stylo} where possible. To
 remove a title, set it to \code{NULL} or to an empty
@@ -53,6 +63,8 @@ set \strong{""}.}
 \item{caption}{Defaults to \code{FALSE}, except with
 certain \strong{\code{viz}} settings. Change to toggle
 metadata at the bottom of a visualization.}
+
+\item{count.labels}{Toggle (TRUE / FALSE) to show or hide counting numbers at the beginning of labels on a dendrogram. Useful for manually setting a \strong{\code{highlight.box}} when constructing a plot, but probably not ideal for the final version of a dendrogram. Defaults to FALSE}
 
 \item{legend}{Show or hide the legend with \code{TRUE} or \code{FALSE}.}
 
@@ -129,7 +141,8 @@ edge of a label.}
 
 \item{show.zero}{Toggle (TRUE / FALSE) for leaving space below the lowest distance to indicate zero}
 
-\item{highlight.box}{On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram)}
+\item{highlight.box}{On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram); it might be helpful to toggle the \strong{\code{count.labels}} parameter to
+\code{TRUE} to avoid having to count large data sets.}
 }
 \description{
 Visualize \code{stylo} data with \code{ggplot2}.
