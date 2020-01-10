@@ -359,7 +359,7 @@ stylo2gg <- function(df, viz, num.features, num.loadings,
   }
 
   if (!missing(title)) {
-    if (!is.expression(my_title)) {
+    if (!is.expression(title)) {
       if (title == "") {
         title = NULL
       }
