@@ -418,14 +418,19 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   the_plot <- df_pca %>%
     ggplot(aes(PC1,
                PC2))
-  if (missing(num.loadings) | num.loadings < 1) {
+
+  if (missing(num.loadings)) {
     the_plot <- the_plot +
       geom_hline(yintercept = 0, color = "gray") +
       geom_vline(xintercept = 0, color = "gray")
-  } else {
+  } else if (num.loadings > 0) {
     the_plot <- s2g_loadings(the_plot,
                              pca_list,
                              num.loadings)
+  } else {
+    the_plot <- the_plot +
+      geom_hline(yintercept = 0, color = "gray") +
+      geom_vline(xintercept = 0, color = "gray")
   }
 
   if (!missing(labeling)) {
