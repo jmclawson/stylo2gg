@@ -8,6 +8,9 @@
 #' \code{"PCR"}, \code{"PCV"}, or \code{"CA"}---all
 #' inherited from \code{stylo}---will reset a number of
 #' defaults.
+#' @param features A vector containing a selection of features
+#' to consider for analysis. This option is useful for
+#' replicating a previous analysis.
 #' @param num.features The number of features to be used for an
 #' analysis. By default, \code{stylo}'s settings are used, but
 #' it is easy here limit the number to a smaller set, ordered
@@ -105,7 +108,8 @@
 #' @import dendextend ggplot2 dplyr ggrepel lemon
 #' @export stylo2gg
 
-stylo2gg <- function(df, viz, num.features, num.loadings,
+stylo2gg <- function(df, viz, features,
+                     num.features, num.loadings,
                      title = NULL, caption = FALSE,
                      count.labels = FALSE,
                      legend, black = NULL, highlight = NULL,
@@ -288,9 +292,15 @@ stylo2gg <- function(df, viz, num.features, num.loadings,
     scaling <- TRUE
   }
 
-  df <- df$table.with.all.freqs %>%
-    .[,df$features.actually.used[1:num.features]] %>%
-    as.data.frame()
+  if (!missing(features)) {
+    df <- df$table.with.all.freqs %>%
+      .[,features] %>%
+      as.data.frame()
+  } else {
+    df <- df$table.with.all.freqs %>%
+      .[,df$features.actually.used[1:num.features]] %>%
+      as.data.frame()
+  }
 
   df_means <- colMeans(df)
   df_sd <- apply(df, 2, sd)

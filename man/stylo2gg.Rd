@@ -7,6 +7,7 @@
 stylo2gg(
   df,
   viz,
+  features,
   num.features,
   num.loadings,
   title = NULL,
@@ -41,6 +42,10 @@ hierarchical clustering; alternatively, using
 \code{"PCR"}, \code{"PCV"}, or \code{"CA"}---all
 inherited from \code{stylo}---will reset a number of
 defaults.}
+
+\item{features}{A vector containing a selection of features
+to consider for analysis. This option is useful for
+replicating a previous analysis.}
 
 \item{num.features}{The number of features to be used for an
 analysis. By default, \code{stylo}'s settings are used, but

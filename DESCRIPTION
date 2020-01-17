@@ -1,7 +1,7 @@
 Package: stylo2gg
 Type: Package
 Title: Visualize Stylometric Data with ggplot2
-Version: 0.3.2
+Version: 0.3.3
 Author: James M. Clawson
 Maintainer: James M. Clawson <clawson@gmail.com>
 Description: Import data from stylo() and visualize it with different
