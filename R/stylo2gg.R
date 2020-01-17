@@ -296,6 +296,8 @@ stylo2gg <- function(df, viz, features,
     df <- df$table.with.all.freqs %>%
       .[,features] %>%
       as.data.frame()
+
+    num.features <- length(features)
   } else {
     df <- df$table.with.all.freqs %>%
       .[,df$features.actually.used[1:num.features]] %>%
