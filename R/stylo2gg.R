@@ -151,6 +151,8 @@ stylo2gg <- function(df, viz, features,
         num.loadings <- num.features
       }
     }
+  } else if (num.loadings == "all") {
+    num.loadings <- num.features
   }
 
   legend_position <- "right"
