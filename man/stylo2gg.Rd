@@ -9,7 +9,7 @@ stylo2gg(
   viz,
   features,
   num.features,
-  num.loadings,
+  show.loadings,
   title = NULL,
   caption = FALSE,
   count.labels = FALSE,
@@ -52,7 +52,7 @@ analysis. By default, \code{stylo}'s settings are used, but
 it is easy here limit the number to a smaller set, ordered
 by frequency}
 
-\item{num.loadings}{The number of features to show as
+\item{show.loadings}{The number of features to show as
 vectors in a principal components analysis. By default,
 loadings are not shown unless \code{stylo}'s setting for
 \code{pca.visual.flavour} is set to \code{"loadings"}; at

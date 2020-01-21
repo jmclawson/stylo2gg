@@ -15,7 +15,7 @@
 #' analysis. By default, \code{stylo}'s settings are used, but
 #' it is easy here limit the number to a smaller set, ordered
 #' by frequency
-#' @param num.loadings The number of features to show as
+#' @param show.loadings The number of features to show as
 #' vectors in a principal components analysis. By default,
 #' loadings are not shown unless \code{stylo}'s setting for
 #' \code{pca.visual.flavour} is set to \code{"loadings"}; at
@@ -109,7 +109,7 @@
 #' @export stylo2gg
 
 stylo2gg <- function(df, viz, features,
-                     num.features, num.loadings,
+                     num.features, show.loadings,
                      title = NULL, caption = FALSE,
                      count.labels = FALSE,
                      legend, black = NULL, highlight = NULL,
@@ -129,6 +129,10 @@ stylo2gg <- function(df, viz, features,
     num.features <- length(df$features.actually.used)
   }
 
+  if (!missing(features)) {
+    num.features <- length(features)
+  }
+
   if ("call" %in% names(df)) {
     my_call <- df$call
     my_call[1] <- substitute(data.frame())
@@ -145,14 +149,14 @@ stylo2gg <- function(df, viz, features,
       }
   }
 
-  if (missing(num.loadings)) {
+  if (missing(show.loadings)) {
     if ("pca.visual.flavour" %in% names(my_call)) {
       if (my_call$pca.visual.flavour == "loadings") {
-        num.loadings <- num.features
+        show.loadings <- num.features
       }
     }
-  } else if (num.loadings == "all") {
-    num.loadings <- num.features
+  } else if (show.loadings == "all") {
+    show.loadings <- num.features
   }
 
   legend_position <- "right"
@@ -227,10 +231,18 @@ stylo2gg <- function(df, viz, features,
     }
 
     if ("analyzed.features" %in% names(my_call)) {
-      if (my_call$analyzed.features == "c") {
-        the_features <- "MFC"
-      } else if (my_call$analyzed.features == "w") {
+      if (missing(features)) {
+        if (my_call$analyzed.features == "c") {
+          the_features <- "MFC"
+        } else if (my_call$analyzed.features == "w") {
           the_features <-  "MFW"
+        }
+      } else {
+        if (my_call$analyzed.features == "c") {
+          the_features <- "C"
+        } else if (my_call$analyzed.features == "w") {
+          the_features <-  "W"
+        }
       }
     } else {
       the_features <-  "features"
@@ -354,7 +366,7 @@ stylo2gg <- function(df, viz, features,
                         legend_position, num_shapes, my_shapes,
                         title, caption, black, the_caption,
                         scaling, invert.x, invert.y,
-                        num.loadings)
+                        show.loadings)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
     if (missing(highlight.single) && !is.null(highlight)){
       highlight.single <- TRUE
@@ -392,7 +404,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     shapes, legend, highlight,
                     legend_position, num_shapes, my_shapes,
                     title, caption, black, the_caption,
-                    scaling, invert.x, invert.y, num.loadings){
+                    scaling, invert.x, invert.y, show.loadings){
   df_pca <- prcomp(df_z, scale. = scaling)
   pca_list <- df_pca
   df_pca_rotation <- df_pca$rotation
@@ -433,14 +445,14 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     ggplot(aes(PC1,
                PC2))
 
-  if (missing(num.loadings)) {
+  if (missing(show.loadings)) {
     the_plot <- the_plot +
       geom_hline(yintercept = 0, color = "gray") +
       geom_vline(xintercept = 0, color = "gray")
-  } else if (num.loadings > 0) {
+  } else if (show.loadings > 0) {
     the_plot <- s2g_loadings(the_plot,
                              pca_list,
-                             num.loadings,
+                             show.loadings,
                              invert.x,
                              invert.y)
   } else {
@@ -603,7 +615,7 @@ s2g_loadings <- function(the_plot,
                          pca_list,
                          # df_pca,
                          # df_pca_rotation,
-                         num.loadings,
+                         show.loadings,
                          invert.x,
                          invert.y) {
   df_pca <- as.data.frame(pca_list$x)
@@ -633,8 +645,8 @@ s2g_loadings <- function(the_plot,
     df_rotation_abs$word[order(df_rotation_abs$PC2,
                                 decreasing = TRUE)]
 
-  loading_words <- c(pc1_words[1:num.loadings],
-                     pc2_words[1:num.loadings]) %>%
+  loading_words <- c(pc1_words[1:show.loadings],
+                     pc2_words[1:show.loadings]) %>%
     unique()
 
   loadings_df <-
@@ -648,9 +660,9 @@ s2g_loadings <- function(the_plot,
   loadings_df <- loadings_df[order(loadings_df[,3],
                                    decreasing = TRUE),]
 
-  # limit number of rows to num.loadings
-  if (length(loading_words) > num.loadings) {
-    loadings_df <- loadings_df[1:num.loadings,]
+  # limit number of rows to show.loadings
+  if (length(loading_words) > show.loadings) {
+    loadings_df <- loadings_df[1:show.loadings,]
   }
 
   max_pc1 <- max(df_rotation$PC1)
@@ -1052,7 +1064,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
     the_coords <- sort(the_coords)
 
     if (length(h) > 1) {
-      message("Dendrograms can only highlight one class at a time. Use the geom_rect() function from ggplot2 to highlight manually.")
+      message("Dendrograms can only highlight one class at a time. Use the geom_rect() function from ggplot2 to highlight manually. Alternatively, set the highlight.box argument to a range.")
       }
     }
 
