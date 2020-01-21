@@ -184,6 +184,12 @@ stylo2gg <- function(df, viz, features,
       }
     }
 
+    if ("pca.visual.flavour" %in% names(my_call)) {
+      if (my_call$pca.visual.flavour == "symbols" && missing(shapes)) {
+        shapes <- TRUE
+      }
+      }
+
     if (is.null(title)) {
       if ("custom.graph.title" %in% names(my_call)) {
         title <- my_call$custom.graph.title
