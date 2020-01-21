@@ -440,7 +440,9 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   } else if (num.loadings > 0) {
     the_plot <- s2g_loadings(the_plot,
                              pca_list,
-                             num.loadings)
+                             num.loadings,
+                             invert.x,
+                             invert.y)
   } else {
     the_plot <- the_plot +
       geom_hline(yintercept = 0, color = "gray") +
@@ -601,7 +603,9 @@ s2g_loadings <- function(the_plot,
                          pca_list,
                          # df_pca,
                          # df_pca_rotation,
-                         num.loadings) {
+                         num.loadings,
+                         invert.x,
+                         invert.y) {
   df_pca <- as.data.frame(pca_list$x)
   df_pca_rotation <- as.data.frame(pca_list$rotation)
 
@@ -609,6 +613,14 @@ s2g_loadings <- function(the_plot,
   min_x <- min(df_pca$PC1)
   max_y <- max(df_pca$PC2)
   min_y <- min(df_pca$PC2)
+
+  if (invert.x) {
+    df_pca$PC1 <- df_pca$PC1 * -1
+  }
+
+  if (invert.y) {
+    df_pca$PC2 <- df_pca$PC2 * -1
+  }
 
   df_rotation <- as.data.frame(df_pca_rotation)
   df_rotation_abs <-
