@@ -614,14 +614,6 @@ s2g_loadings <- function(the_plot,
   max_y <- max(df_pca$PC2)
   min_y <- min(df_pca$PC2)
 
-  if (invert.x) {
-    df_pca$PC1 <- df_pca$PC1 * -1
-  }
-
-  if (invert.y) {
-    df_pca$PC2 <- df_pca$PC2 * -1
-  }
-
   df_rotation <- as.data.frame(df_pca_rotation)
   df_rotation_abs <-
     data.frame(PC1 = df_rotation$PC1 %>%
@@ -671,6 +663,14 @@ s2g_loadings <- function(the_plot,
     (max_x - min_x)/(max_pc1 - min_pc1)
   loadings_df_scaled[,2] <- loadings_df_scaled[,2] *
     (max_y - min_y)/(max_pc2 - min_pc2)
+
+  if (invert.x) {
+    loadings_df_scaled$PC1 <- loadings_df_scaled$PC1 * -1
+  }
+
+  if (invert.y) {
+    loadings_df_scaled$PC2 <- loadings_df_scaled$PC2 * -1
+  }
 
   the_plot <- the_plot +
     geom_segment(data = loadings_df_scaled,
