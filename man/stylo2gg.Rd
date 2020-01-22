@@ -29,7 +29,8 @@ stylo2gg(
   highlight.nudge,
   highlight.single,
   show.zero,
-  highlight.box = NULL
+  highlight.box = NULL,
+  exception
 )
 }
 \arguments{

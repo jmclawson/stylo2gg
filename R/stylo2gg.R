@@ -118,7 +118,8 @@ stylo2gg <- function(df, viz, features,
                      scaling = FALSE, distance.measure, linkage,
                      horiz = TRUE, axis.labels = FALSE,
                      highlight.nudge, highlight.single,
-                     show.zero, highlight.box = NULL) {
+                     show.zero, highlight.box = NULL,
+                     exception) {
   library(dendextend)
   library(ggplot2)
   library(dplyr)
@@ -372,7 +373,7 @@ stylo2gg <- function(df, viz, features,
                         legend_position, num_shapes, my_shapes,
                         title, caption, black, the_caption,
                         scaling, invert.x, invert.y,
-                        show.loadings)
+                        show.loadings, exception)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
     if (missing(highlight.single) && !is.null(highlight)){
       highlight.single <- TRUE
@@ -410,8 +411,45 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     shapes, legend, highlight,
                     legend_position, num_shapes, my_shapes,
                     title, caption, black, the_caption,
-                    scaling, invert.x, invert.y, show.loadings){
-  df_pca <- prcomp(df_z, scale. = scaling)
+                    scaling, invert.x, invert.y,
+                    show.loadings, exception){
+  df_z <<- df_z
+  the_classes <- rownames(df_z) %>%
+    strsplit("_") %>%
+    sapply(`[`,1)
+
+  # Here, begin to add the machinery for "exception"
+  # I still need to test it a lot!
+  # It occasionally seems to malfunction
+
+  if (!missing(exception)) {
+    the_exception <- the_classes %in% exception
+    # the_class <- the_class[!the_exception]
+  } else {
+    the_exception <- rep(FALSE, length(the_classes))
+  }
+
+  # the_exception <- rep(FALSE, length(the_classes))
+
+  df_pca <- prcomp(df_z[!the_exception,], scale. = scaling)
+
+  if (!missing(exception)) {
+    df_exception <-
+      df_z[the_exception,] %>%
+      as.matrix() %>%
+      apply(1, function(x) x - df_pca$center) %>%
+      t()
+
+    df_exception <- df_exception %*% df_pca$rotation
+
+    df_exception <<- df_exception
+
+    df_pca$x <- rbind(df_pca$x, df_exception)
+
+    df_pca$x <- df_pca$x[rownames(df_z),]
+  }
+
+  df_pca <<- df_pca
   pca_list <- df_pca
   df_pca_rotation <- df_pca$rotation
 
@@ -485,6 +523,10 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
           sapply(`[`,labeling)
       }
     }}
+
+  # if (!missing(exception)) {
+  #   labeling <- labeling[!the_exception]
+  # }
 
   if (missing(labeling)) {
     if (missing(legend)) {
@@ -580,6 +622,12 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     round(pc_variance[2]*100,1),
                     "%)")
 
+  if (!missing(exception)) {
+    y_label <- paste0("PC2 (",
+                      round(pc_variance[2]*100,1),
+                      "%*)")
+  }
+
   the_plot <- the_plot +
     theme_bw() +
     theme(legend.title = element_blank()) +
@@ -592,6 +640,16 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                       "\n",
                       the_caption)
 
+    if (!missing(exception)) {
+      x_label <- paste0("PC1 (",
+                        round(pc_variance[1]*100,1),
+                        "% except ",
+                        paste(exception, collapse = ", "),
+                        ")",
+                        "\n",
+                        the_caption)
+    }
+
     the_plot <- the_plot +
       labs(x = x_label)
 
@@ -600,6 +658,14 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     x_label <- paste0("PC1 (",
                       round(pc_variance[1]*100,1),
                       "%)")
+
+    if (!missing(exception)) {
+      x_label <- paste0("PC1 (",
+                        round(pc_variance[1]*100,1),
+                        "% except ",
+                        paste(exception, collapse = ", "),
+                        ")")
+    }
 
     the_plot <- the_plot +
       labs(x = x_label)
