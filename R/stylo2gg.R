@@ -233,6 +233,9 @@ stylo2gg <- function(df, viz, features,
         the_linkage <- linkage
       }
 
+      the_linkage <- paste0(toupper(substr(the_linkage, 1, 1)),
+                        substr(the_linkage, 2, nchar(the_linkage)))
+
       the_viz <- paste0(the_dist, " distance (",
                        the_linkage, " linkage)")
     }
