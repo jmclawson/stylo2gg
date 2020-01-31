@@ -437,8 +437,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     df_exception <-
       df_z[the_exception,] %>%
       as.matrix() %>%
-      apply(1, function(x) x - df_pca$center) %>%
-      t()
+      scale(df_pca$center, df_pca$scale)
 
     df_exception <- df_exception %*% df_pca$rotation
 
@@ -943,6 +942,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     text_legend <- FALSE
   } else {
     text_legend <- legend
+    the_nudge <- 0
   }
 
   if(count.labels){
