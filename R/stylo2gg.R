@@ -111,7 +111,7 @@
 stylo2gg <- function(df, viz, features,
                      num.features, show.loadings,
                      title = NULL, caption = FALSE,
-                     count.labels = FALSE, show.spaces,
+                     count.labels = FALSE,
                      legend, black = NULL, highlight = NULL,
                      labeling, classing, shapes = FALSE,
                      invert.x = FALSE, invert.y = FALSE,
@@ -384,7 +384,7 @@ stylo2gg <- function(df, viz, features,
                         shapes, legend, highlight,
                         legend_position, num_shapes, my_shapes,
                         title, caption, black, the_caption,
-                        scaling, invert.x, invert.y, show.spaces,
+                        scaling, invert.x, invert.y,
                         show.loadings, exception)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
     if (missing(highlight.single) && !is.null(highlight)) {
@@ -423,7 +423,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     shapes, legend, highlight,
                     legend_position, num_shapes, my_shapes,
                     title, caption, black, the_caption,
-                    scaling, invert.x, invert.y, show.spaces,
+                    scaling, invert.x, invert.y,
                     show.loadings, exception){
   df_z <<- df_z
   the_classes <- rownames(df_z) %>%
@@ -509,8 +509,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                              pca_list,
                              show.loadings,
                              invert.x,
-                             invert.y,
-                             show.spaces)
+                             invert.y)
   } else {
     the_plot <- the_plot +
       geom_hline(yintercept = 0, color = "gray") +
@@ -701,8 +700,7 @@ s2g_loadings <- function(the_plot,
                          # df_pca_rotation,
                          show.loadings,
                          invert.x,
-                         invert.y,
-                         show.spaces) {
+                         invert.y) {
   df_pca <- as.data.frame(pca_list$x)
   df_pca_rotation <- as.data.frame(pca_list$rotation)
 
@@ -762,8 +760,12 @@ s2g_loadings <- function(the_plot,
     (max_y - min_y)/(max_pc2 - min_pc2)
 
   # Standardize spaces in loadings
-  if (!missing(show.spaces)) {
-    if (show.spaces == 2) {
+  feature_spaces <- strsplit(rownames(loadings_df),"[a-z:.]") %>%
+    unlist() %>%
+    max() %>%
+    nchar()
+
+  if (feature_spaces >= 2) {
       rownames(loadings_df) <- rownames(loadings_df) %>%
         gsub(pattern = "\\s{2,}",
              replacement = "_",
@@ -771,12 +773,11 @@ s2g_loadings <- function(the_plot,
         gsub(pattern = "\\s+",
              replacement = "",
              x = .)
-    } else if (show.spaces == 1) {
+  } else {
       rownames(loadings_df) <- rownames(loadings_df) %>%
         gsub(pattern = "\\s{1,}",
              replacement = "_",
              x = .) %>%
-    }
   }
 
   if (invert.x) {
