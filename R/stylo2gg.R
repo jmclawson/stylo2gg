@@ -375,6 +375,10 @@ stylo2gg <- function(df, viz, features,
     df_z <- df
   }
 
+  if (missing(scaling)) {
+    scaling <- FALSE
+  }
+
   if (viz == "pca" || viz == "PCA" || viz == "PCR") {
     the_plot <- s2g_pca(df_z, df_a, the_class, labeling,
                         shapes, legend, highlight,
