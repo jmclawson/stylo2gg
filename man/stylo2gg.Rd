@@ -21,7 +21,7 @@ stylo2gg(
   shapes = FALSE,
   invert.x = FALSE,
   invert.y = FALSE,
-  scaling = FALSE,
+  scaling,
   distance.measure,
   linkage,
   horiz = TRUE,

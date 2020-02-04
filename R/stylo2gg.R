@@ -115,7 +115,7 @@ stylo2gg <- function(df, viz, features,
                      legend, black = NULL, highlight = NULL,
                      labeling, classing, shapes = FALSE,
                      invert.x = FALSE, invert.y = FALSE,
-                     scaling = FALSE, distance.measure, linkage,
+                     scaling, distance.measure, linkage,
                      horiz = TRUE, axis.labels = FALSE,
                      highlight.nudge, highlight.single,
                      show.zero, highlight.box = NULL,
@@ -132,6 +132,10 @@ stylo2gg <- function(df, viz, features,
 
   if (!missing(features)) {
     num.features <- length(features)
+  }
+
+  if (!missing(scaling)) {
+    scaling <- FALSE
   }
 
   if ("call" %in% names(df)) {
@@ -301,6 +305,7 @@ stylo2gg <- function(df, viz, features,
 
   if (missing(viz)) {
     viz <- "pca"
+    scaling <- TRUE
   }
 
   if (missing(linkage)) {
@@ -359,8 +364,8 @@ stylo2gg <- function(df, viz, features,
     length()
 
   my_shapes <- rep(c(1, 3:11), length.out = num_shapes)
-  if(!is.null(black)) {
-    if (length(black) == 1){
+  if (!is.null(black)) {
+    if (length(black) == 1) {
       my_shapes[black] <- 19
     }
   }
@@ -378,10 +383,10 @@ stylo2gg <- function(df, viz, features,
                         scaling, invert.x, invert.y,
                         show.loadings, exception)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
-    if (missing(highlight.single) && !is.null(highlight)){
+    if (missing(highlight.single) && !is.null(highlight)) {
       highlight.single <- TRUE
     }
-    if (missing(highlight.single) && !is.null(highlight.box)){
+    if (missing(highlight.single) && !is.null(highlight.box)) {
       highlight.single <- FALSE
     }
     the_plot <- s2g_hc(df_z, df, df_a, the_distance,
@@ -749,6 +754,15 @@ s2g_loadings <- function(the_plot,
     (max_x - min_x)/(max_pc1 - min_pc1)
   loadings_df_scaled[,2] <- loadings_df_scaled[,2] *
     (max_y - min_y)/(max_pc2 - min_pc2)
+
+  # Standardize spaces in loadings
+  rownames(loadings_df) <-
+    gsub(pattern = "  ",
+         replacement = " ",
+         x = rownames(loadings_df)) %>%
+    gsub(pattern = " ",
+         replacement = "_",
+         x = .)
 
   if (invert.x) {
     loadings_df_scaled$PC1 <- loadings_df_scaled$PC1 * -1
