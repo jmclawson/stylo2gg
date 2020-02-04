@@ -760,12 +760,12 @@ s2g_loadings <- function(the_plot,
     (max_y - min_y)/(max_pc2 - min_pc2)
 
   # Standardize spaces in loadings
-  rownames(loadings_df) <-
-    gsub(pattern = "([a-z]) ([a-z])",
-         replacement = "\\1\\2",
-         x = rownames(loadings_df)) %>%
-    gsub(pattern = "\\s+",
+  rownames(loadings_df) <- rownames(loadings_df) %>%
+    gsub(pattern = "\\s{2,}",
          replacement = "_",
+         x = .) %>%
+    gsub(pattern = "\\s+",
+         replacement = "",
          x = .)
 
   if (invert.x) {
