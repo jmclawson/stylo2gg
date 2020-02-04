@@ -777,7 +777,7 @@ s2g_loadings <- function(the_plot,
       rownames(loadings_df) <- rownames(loadings_df) %>%
         gsub(pattern = "\\s{1,}",
              replacement = "_",
-             x = .) %>%
+             x = .)
   }
 
   if (invert.x) {
