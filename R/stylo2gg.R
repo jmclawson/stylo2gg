@@ -761,7 +761,7 @@ s2g_loadings <- function(the_plot,
 
   # Standardize spaces in loadings
   rownames(loadings_df) <-
-    gsub(pattern = "  ",
+    gsub(pattern = "[ ]+",
          replacement = " ",
          x = rownames(loadings_df)) %>%
     gsub(pattern = " ",
