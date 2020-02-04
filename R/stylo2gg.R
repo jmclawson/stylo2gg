@@ -760,7 +760,7 @@ s2g_loadings <- function(the_plot,
     (max_y - min_y)/(max_pc2 - min_pc2)
 
   # Standardize spaces in loadings
-  feature_spaces <- strsplit(rownames(loadings_df),"[a-z:.]") %>%
+  feature_spaces <- strsplit(rownames(loadings_df),"[A-Za-z:.]") %>%
     unlist() %>%
     max() %>%
     nchar()
