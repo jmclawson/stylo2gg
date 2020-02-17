@@ -9,7 +9,8 @@ stylo2gg(
   viz,
   features,
   num.features,
-  show.loadings,
+  top.loadings,
+  select.loadings,
   title = NULL,
   caption = FALSE,
   count.labels = FALSE,
@@ -53,13 +54,28 @@ analysis. By default, \code{stylo}'s settings are used, but
 it is easy here limit the number to a smaller set, ordered
 by frequency}
 
-\item{show.loadings}{The number of features to show as
+\item{top.loadings}{The number of features to show as
 vectors in a principal components analysis. By default,
 loadings are not shown unless \code{stylo}'s setting for
 \code{pca.visual.flavour} is set to \code{"loadings"}; at
 this time, it defaults to the full number of features. It's
 probably most revealing to choose a smaller number, so that
 only the most significant features are plotted.}
+
+\item{select.loadings}{A list element, with items indicating
+either the nearest location of a selected feature or the names
+of these features. The location can be shown in three ways: 1.
+with coordinates in the PCA space, e.g. \code{c(1,2)}; 2. as
+the number of a category from which to derive an average
+location, e.g. \code{4}; 3. as the name of a category or some
+other element of the original text's filename from which to
+derive an average location, e.g. \code{"hamilton"}. The name of
+a feature is the fourth option: 4. using a call with the
+\code{word} function; for example, to show the word
+"undershirt," the list item would be
+\code{call("word", "undershirt")}. Multiple types of items can
+be combined in one list:
+\code{select.loadings = list(c(1,2), 4, "hamilton", call("word", "undershirt"))}.}
 
 \item{title}{The title that will go on the top of a chart.
 This value is inherited from \code{stylo} where possible. To

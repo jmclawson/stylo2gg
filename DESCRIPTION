@@ -1,15 +1,15 @@
 Package: stylo2gg
 Type: Package
 Title: Visualize Stylometric Data with ggplot2
-Version: 0.6.2
+Version: 0.7
 Author: James M. Clawson
 Maintainer: James M. Clawson <clawson@gmail.com>
 Description: Import data from stylo() and visualize it with different
     settings, removing the need to reevaluate for new visualizations.
     Stylo2gg provides reasonable defaults to recreate most Stylo 
     visualizations, but it also provides methods to highlight subsets
-    of the data and to provide visualizations well suited for printing
-    without color.
+    of the data, to show selected principal components loadings, and 
+    to provide visualizations well suited for printing without color.
 Enhances:
     stylo
 Imports:
