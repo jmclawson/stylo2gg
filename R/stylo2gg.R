@@ -581,7 +581,8 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                      color = class,
                      alpha = class,
                      size = class),
-                 show.legend = legend) +
+                 show.legend = legend,
+                 key_glyph = "rect") +
       scale_shape_manual(values = my_shapes) +
       scale_alpha_manual(values = rep(1, length(my_shapes))) +
       scale_size_manual(values = rep(1, length(my_shapes)))
