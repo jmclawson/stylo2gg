@@ -574,17 +574,17 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       legend <- TRUE
     }
 
-    alpha_values <- rep(1, length(unique(df_pca$class)))
+    # alpha_values <- rep(1, length(unique(df_pca$class)))
 
     the_plot <- the_plot +
       geom_point(aes(shape = class,
                      color = class,
-                     size = class,
-                     alpha = class),
+                     # alpha = class,
+                     size = class),
                  show.legend = legend) +
       scale_shape_manual(values = my_shapes) +
-      scale_size_manual(values = rep(1, length(class))) +
-      scale_alpha_manual(values = alpha_values)
+      # scale_alpha_manual(values = alpha_values) +
+      scale_size_manual(values = rep(1, length(class)))
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
@@ -593,17 +593,18 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       legend <- TRUE
     }
 
-    alpha_values <- rep(1, length(unique(df_pca$class)))
+    # alpha_values <- rep(1, length(unique(df_pca$class)))
 
     # library(ggrepel)
     the_plot <- the_plot +
       geom_point(aes(shape = class,
                      color = class,
-                     size = class,
-                     alpha = class),
+                     # alpha = class,
+                     size = class),
                  show.legend = legend) +
-      scale_size_manual(values = rep(1, length(class))) +
-      scale_alpha_manual(values = alpha_values)
+      # scale_alpha_manual(values = alpha_values) +
+      scale_size_manual(values = rep(1, length(class)))
+
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
