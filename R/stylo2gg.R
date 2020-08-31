@@ -574,7 +574,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       legend <- TRUE
     }
 
-    platypus_test1 <<- rep(1, length(df_pca$class))
+    platypus_test1 <<- rep(1, length(unique(df_pca$class)))
 
     the_plot <- the_plot +
       geom_point(aes(shape = class,
@@ -583,8 +583,8 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                      alpha = class),
                  show.legend = legend) +
       scale_shape_manual(values = my_shapes) +
-      scale_size_manual(values = rep(1, length(class))) +
-      scale_alpha_manual(values = rep(1, length(class)))
+      scale_size_manual(values = rep(1, length(unique(class)))) +
+      scale_alpha_manual(values = rep(1, length(unique(class))))
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
@@ -593,7 +593,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       legend <- TRUE
     }
 
-    platypus_test2 <<- rep(1, length(df_pca$class))
+    platypus_test2 <<- rep(1, length(df_pca$unique(class)))
 
     # library(ggrepel)
     the_plot <- the_plot +
@@ -602,8 +602,8 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                      size = class,
                      alpha = class),
                  show.legend = legend) +
-      scale_size_manual(values = rep(1, length(class))) +
-      scale_alpha_manual(values = rep(1, length(class)))
+      scale_size_manual(values = rep(1, length(unique(class)))) +
+      scale_alpha_manual(values = rep(1, length(unique(class))))
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
