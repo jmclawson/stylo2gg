@@ -577,10 +577,12 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     the_plot <- the_plot +
       geom_point(aes(shape = class,
                      color = class,
-                     size = class),
+                     size = class,
+                     alpha = class),
                  show.legend = legend) +
       scale_shape_manual(values = my_shapes) +
-      scale_size_manual(values = rep(1, length(class)))
+      scale_size_manual(values = rep(1, length(class))) +
+      scale_alpha_manual(values = rep(1, length(class)))
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
@@ -593,9 +595,11 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     the_plot <- the_plot +
       geom_point(aes(shape = class,
                      color = class,
-                     size = class),
+                     size = class,
+                     alpha = class),
                  show.legend = legend) +
-      scale_size_manual(values = rep(1, length(class)))
+      scale_size_manual(values = rep(1, length(class))) +
+      scale_alpha_manual(values = rep(1, length(class)))
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
