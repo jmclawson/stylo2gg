@@ -581,8 +581,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                      color = class,
                      alpha = class,
                      size = class),
-                 show.legend = legend,
-                 key_glyph = "rect") +
+                 show.legend = legend) +
       scale_shape_manual(values = my_shapes) +
       scale_alpha_manual(values = rep(1, length(my_shapes))) +
       scale_size_manual(values = rep(1, length(my_shapes)))
@@ -626,7 +625,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     color = class,
                     group = class),
                 show.legend = legend,
-                key_glyph = "rect")
+                key_glyph = "point")
   }
   # the_plot <- s2g_highlight(the_plot,
   #                           df_pca = df_pca,
