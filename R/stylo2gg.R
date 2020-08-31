@@ -625,7 +625,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     color = class,
                     group = class),
                 show.legend = legend,
-                key_glyph = "point")
+                key_glyph = "text")
   }
   # the_plot <- s2g_highlight(the_plot,
   #                           df_pca = df_pca,
