@@ -671,13 +671,13 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                   list(label = "#",
                        linetype = silly_guides)
                   ))
-      }
-      } else {
-        the_plot <- the_plot +
-          guides(color = guide_legend(override.aes =
-                  list(#aes(label = "#"),
-                  linetype = silly_guides)
-          ))
+    } else {
+      the_plot <- the_plot +
+        guides(color = guide_legend(override.aes =
+                                      list(#aes(label = "#"),
+                                        linetype = silly_guides)
+        ))
+    }
       }
 
   if (!is.null(black)) {
