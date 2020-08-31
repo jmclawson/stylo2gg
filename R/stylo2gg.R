@@ -665,7 +665,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                 show.legend = FALSE)
 
     if (labeling.numeric) {
-      message("Numeric labels")
+      # message("Numeric labels")
         the_plot <- the_plot +
           guides(color = guide_legend(override.aes =
                   list(label = "#",
