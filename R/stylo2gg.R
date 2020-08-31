@@ -565,7 +565,9 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       }
     }}
 
-  labeling.numeric <- suppressWarnings(all(!is.na(as.numeric(as.character(labeling)))))
+  if (!missing(labeling)){
+    labeling.numeric <- suppressWarnings(all(!is.na(as.numeric(as.character(labeling)))))
+  }
 
   # if (!missing(exception)) {
   #   labeling <- labeling[!the_exception]
