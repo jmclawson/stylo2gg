@@ -662,13 +662,22 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                 aes(xmin = 0, xmax = 0,
                     ymin = 0, ymax = 0),
                 color = "gray", fill = NA,
-                show.legend = FALSE) +
-      guides(
-        color = guide_legend(
-          override.aes = list(linetype = silly_guides)
-        )
-      )
-  }
+                show.legend = FALSE)
+
+    if (labeling.numeric) {
+        the_plot <- the_plot +
+          guides(color = guide_legend(override.aes =
+                  list(aes(label = "#"),
+                       linetype = silly_guides)
+                  ))
+      }
+      } else {
+        the_plot <- the_plot +
+          guides(color = guide_legend(override.aes =
+                  # list(aes(label = "#"),
+                  linetype = silly_guides
+          ))
+      }
 
   if (!is.null(black)) {
     the_colors <- gg_color(num_shapes)
