@@ -584,7 +584,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                  show.legend = legend) +
       scale_shape_manual(values = my_shapes) +
       # scale_alpha_manual(values = alpha_values) +
-      scale_size_manual(values = rep(1, length(class)))
+      scale_size_manual(values = rep(1, length(my_shapes)))
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
 
@@ -603,7 +603,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                      size = class),
                  show.legend = legend) +
       # scale_alpha_manual(values = alpha_values) +
-      scale_size_manual(values = rep(1, length(class)))
+      scale_size_manual(values = rep(1, length(my_shapes)))
 
 
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
