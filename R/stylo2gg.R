@@ -574,6 +574,8 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       legend <- TRUE
     }
 
+    platypus_test1 <<- rep(1, length(df_pca$class))
+
     the_plot <- the_plot +
       geom_point(aes(shape = class,
                      color = class,
@@ -590,6 +592,8 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     if (missing(legend)) {
       legend <- TRUE
     }
+
+    platypus_test2 <<- rep(1, length(df_pca$class))
 
     # library(ggrepel)
     the_plot <- the_plot +
