@@ -565,6 +565,8 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       }
     }}
 
+  labeling.numeric <- suppressWarnings(all(!is.na(as.numeric(as.character(labeling)))))
+
   # if (!missing(exception)) {
   #   labeling <- labeling[!the_exception]
   # }
@@ -625,6 +627,11 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     color = class,
                     group = class),
                 show.legend = legend)
+
+    if (labeling.numeric) {
+      the_plot <- the_plot +
+        guides(color = guide_legend(override.aes = aes(label = "#")))
+    }
   }
   # the_plot <- s2g_highlight(the_plot,
   #                           df_pca = df_pca,
