@@ -965,6 +965,7 @@ get_class_loading_words <- function(clue,
 
 get_nearest_loading_words <- function(xy,
                                       pca_list) {
+  lo_words <- c()
   message("platypus-b-1")
   df_pca <- pca_list$x
   df_pca_rotation <- pca_list$rotation
@@ -1003,7 +1004,7 @@ get_nearest_loading_words <- function(xy,
     rownames() %>%
     .[1]
   message("platypus-b-4")
-  loading_words <- loading_words %>%
+  loading_words <- lo_words %>%
     c(nearest_loading) %>%
     unique()
 
