@@ -817,11 +817,9 @@ s2g_loadings <- function(the_plot,
           if (invert.y) {
             t_i[2] <- t_i[2]*(-1)
           }
-          message("platypus-1")
           this_loading_words <-
             t_i %>%
             get_nearest_loading_words(pca_list)
-          message("platypus-2")
           loading_words <- loading_words %>%
             c(this_loading_words)
 
@@ -966,10 +964,8 @@ get_class_loading_words <- function(clue,
 get_nearest_loading_words <- function(xy,
                                       pca_list) {
   lo_words <- c()
-  message("platypus-b-1")
   df_pca <- pca_list$x
   df_pca_rotation <- pca_list$rotation
-  message("platypus-b-2")
 
   # using manhattan distance here
   # (would euclidean be better?)
@@ -995,7 +991,6 @@ get_nearest_loading_words <- function(xy,
   nearest_loading <- nearest_loading %>%
     sqrt() %>%
     as.data.frame()
-  message("platypus-b-3")
 
   nearest_loading <-
     nearest_loading[order(nearest_loading[,1]),,
@@ -1003,7 +998,6 @@ get_nearest_loading_words <- function(xy,
     as.data.frame() %>%
     rownames() %>%
     .[1]
-  message("platypus-b-4")
   loading_words <- lo_words %>%
     c(nearest_loading) %>%
     unique()
