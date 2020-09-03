@@ -36,4 +36,4 @@ Use `shapes=FALSE` and `shapes=TRUE` to toggle symbols on and off of a visualiza
 
 Set `highlight=` to a number or numbers corresponding to the legend index of a certain category of work. For example, `highlight=1` will draw a circle around or a box around texts attributed to the first author in the legend.
 
-More options are explained here: [jmclawson.net/blog/posts/introducing-stylo2gg/](https://jmclawson.net/blog/posts/introducing-stylo2gg/)
+More options and examples are shown here: [jmclawson.net/blog/posts/introducing-stylo2gg/](https://jmclawson.net/blog/posts/introducing-stylo2gg/)
