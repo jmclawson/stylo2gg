@@ -858,24 +858,11 @@ s2g_loadings <- function(the_plot,
       df_rotation_abs$word[order(df_rotation_abs$PC2,
                                  decreasing = TRUE)]
 
-    loading_words <- pc1_words[1:top.loadings] %>%
-      c(pc2_words[1:top.loadings]) %>%
-      unique()
-
-    loadings_df <-
-      df_rotation[rownames(df_rotation) %in% loading_words,1:2]
-
-    # Figure out which vectors are longest
-    loadings_df[,3] <-
-      (loadings_df[,1])^2 + (loadings_df[,2])^2
-
-    # order the rows by length
-    loadings_df <- loadings_df[order(loadings_df[,3],
-                                     decreasing = TRUE),]
-
-    # limit number of rows to top.loadings
-    if (length(loading_words) > top.loadings) {
-      loadings_df <- loadings_df[1:top.loadings,]
+    # wait to limit word choices after distance is known
+    loadings_df <- df_rotation %>% 
+      mutate(distance = sqrt(PC1^2 + PC2^2)) %>% 
+      arrange(-distance) %>% 
+      .[1:top.loadings,]
     }
   } else {
     loadings_df <-
