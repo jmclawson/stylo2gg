@@ -860,7 +860,12 @@ s2g_loadings <- function(the_plot,
 
     # wait to limit word choices after distance is known
     loadings_df <- df_rotation %>% 
-      mutate(distance = sqrt(PC1^2 + PC2^2)) %>% 
+      mutate(distance = sqrt(PC1^2 + PC2^2))
+    
+    s2g_loadings <<- loadings_df %>% 
+      arrange(-PC1, -PC2)
+    
+    loadings_df <- loadings_df %>% 
       arrange(-distance) %>% 
       .[1:top.loadings,]
   } else {
