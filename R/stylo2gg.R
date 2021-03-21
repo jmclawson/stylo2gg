@@ -479,6 +479,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   }
 
   s2g_export$pca <<- df_pca
+  s2g_export$pca_details <<- summary(df_pca)
   pca_list <- df_pca
   df_pca_rotation <- df_pca$rotation
 
