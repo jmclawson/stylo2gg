@@ -863,7 +863,6 @@ s2g_loadings <- function(the_plot,
       mutate(distance = sqrt(PC1^2 + PC2^2)) %>% 
       arrange(-distance) %>% 
       .[1:top.loadings,]
-    }
   } else {
     loadings_df <-
       df_rotation[rownames(df_rotation) %in% loading_words,1:2]
