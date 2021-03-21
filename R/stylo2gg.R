@@ -871,7 +871,7 @@ s2g_loadings <- function(the_plot,
       mutate(PC1 = if(invert.x){-1*PC1} else{PC1},
              PC2 = if(invert.y){-1*PC2} else{PC2},)
     
-    loadings_df <- loadings_df <-%>% 
+    loadings_df <- loadings_df %>% 
       .[1:top.loadings,]
     
   } else {
