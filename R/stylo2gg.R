@@ -836,6 +836,8 @@ s2g_loadings <- function(the_plot,
   min_x <- min(df_pca$PC1)
   max_y <- max(df_pca$PC2)
   min_y <- min(df_pca$PC2)
+  
+  s2g_pca <<- df_pca
 
   df_rotation <- as.data.frame(df_pca_rotation)
 
