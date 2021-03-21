@@ -837,7 +837,7 @@ s2g_loadings <- function(the_plot,
   max_y <- max(df_pca$PC2)
   min_y <- min(df_pca$PC2)
   
-  s2g_export <- list()
+  s2g_export <<- list()
   s2g_export$pca <<- df_pca
 
   df_rotation <- as.data.frame(df_pca_rotation)
