@@ -140,6 +140,7 @@ stylo2gg <- function(df, viz, features,
   library(dplyr)
   library(ggrepel)
   if ("lemon" %in% rownames(installed.packages())) library(lemon)
+  s2g_export <<- list()
   df_a <- df
   if (missing(num.features)) {
     num.features <- length(df$features.actually.used)
@@ -442,7 +443,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     scaling, invert.x, invert.y,
                     top.loadings,
                     select.loadings, exception){
-  df_z <<- df_z
+  s2g_export$z <<- df_z
   the_classes <- rownames(df_z) %>%
     strsplit("_") %>%
     sapply(`[`,1)
@@ -470,14 +471,14 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
 
     df_exception <- df_exception %*% df_pca$rotation
 
-    df_exception <<- df_exception
+    s2g_export$exception <<- df_exception
 
     df_pca$x <- rbind(df_pca$x, df_exception)
 
     df_pca$x <- df_pca$x[rownames(df_z),]
   }
 
-  df_pca <<- df_pca
+  s2g_export$pca <<- df_pca
   pca_list <- df_pca
   df_pca_rotation <- df_pca$rotation
 
@@ -837,7 +838,6 @@ s2g_loadings <- function(the_plot,
   max_y <- max(df_pca$PC2)
   min_y <- min(df_pca$PC2)
   
-  s2g_export <<- list()
   s2g_export$pca <<- df_pca
 
   df_rotation <- as.data.frame(df_pca_rotation)
@@ -869,7 +869,13 @@ s2g_loadings <- function(the_plot,
     s2g_export$loadings <<- loadings_df %>% 
       select(PC1, PC2, distance) %>% 
       mutate(PC1 = if(invert.x){-1*PC1} else{PC1},
-             PC2 = if(invert.y){-1*PC2} else{PC2})
+             PC2 = if(invert.y){-1*PC2} else{PC2},
+             angle = atan(PC2/PC1)*(360/(2*pi)), 
+             angle = case_when(
+               PC1 < 0   ~ angle + 180, 
+               angle < 0 ~ angle + 360, 
+               TRUE      ~ angle) %>% 
+               round(2))
     
     loadings_df <- loadings_df %>% 
       .[1:top.loadings,]
@@ -1124,14 +1130,10 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
   #   sapply(`[`,1)
 
   match_df <- df_a$table.with.all.freqs
-  # the_ggdend_a <<- the_ggdend
-  # the_ggdend_a$df_a <<- match_df
 
   the_ggdend$labels <-
     the_ggdend$labels[match(rownames(match_df),
                             gsub(" ","",as.character(the_ggdend$labels$label))),]
-
-  # the_ggdend_b <<- the_ggdend
 
   the_ggdend$labels$class <- the_class
 
@@ -1353,7 +1355,6 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                                highlight.nudge,
                                highlight.single,
                                highlight.box, legend) {
-  # the_ggdend <<- the_ggdend
 
   if(!is.null(highlight)) {
 
@@ -1377,10 +1378,6 @@ s2g_highlight_rect <- function(the_plot = the_plot,
   end <- c(start - 1, length(the_coords))
   end <- end[end > 0]
 
-  # the_coords <<- the_coords
-  # start <<- start
-  # end <<- end
-
   if (highlight.single) {
     start <- 1
     end <- length(the_coords)
@@ -1388,9 +1385,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
 
   if (length(start) > 1) {
     the_branch_max <- c()
-    # the_branch_max <<- c()
     the_branch_min <- c()
-    # the_branch_min <<- c()
     for (i in 1:length(start)) {
       # from1 <- the_ggdend$labels$y
       bottom <- the_coords[start[i]]
@@ -1399,7 +1394,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
       this_tab <- from1$y[from1$x >= bottom &
                             from1$x <= top] %>%
         table()
-      # this_tab <<- this_tab
+      
       the_branch_min[i] <-
         this_tab[this_tab == max(this_tab)] %>%
         names() %>%
@@ -1410,8 +1405,6 @@ s2g_highlight_rect <- function(the_plot = the_plot,
         from1$y[round(from1$y,5) ==
                   round(the_branch_min[i],5)] %>%
         max(na.rm = TRUE)
-
-      # the_branch_min[i] <<- the_branch_min[i]
 
       from2 <- the_ggdend$segments$y
       the_branch_max[i] <-
@@ -1497,9 +1490,6 @@ s2g_highlight_rect <- function(the_plot = the_plot,
     if (the_coords[start] == the_coords[end]) {
       the_branch_max <- the_branch_min*1.1
     }
-
-    # the_branch_min <<- the_branch_min
-    # the_branch_max <<- the_branch_max
 
     label_widths <- the_ggdend$labels$labels %>%
       strwidth("inches")
