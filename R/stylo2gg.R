@@ -837,7 +837,8 @@ s2g_loadings <- function(the_plot,
   max_y <- max(df_pca$PC2)
   min_y <- min(df_pca$PC2)
   
-  s2g_pca <<- df_pca
+  s2g_export <- list()
+  s2g_export$pca <<- df_pca
 
   df_rotation <- as.data.frame(df_pca_rotation)
 
@@ -864,7 +865,7 @@ s2g_loadings <- function(the_plot,
     loadings_df <- df_rotation %>% 
       mutate(distance = sqrt(PC1^2 + PC2^2))
     
-    s2g_loadings <<- loadings_df %>% 
+    s2g_export$loadings <<- loadings_df %>% 
       arrange(-PC1, -PC2)
     
     loadings_df <- loadings_df %>% 
