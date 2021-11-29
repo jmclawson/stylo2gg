@@ -17,7 +17,7 @@ Imports:
     dplyr,
     ggalt,
     ggplot2,
-    ggrepel
+    ggrepel,
     lemon
 License: GPL-3
 Encoding: UTF-8
