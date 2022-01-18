@@ -868,7 +868,8 @@ s2g_loadings <- function(the_plot,
       arrange(-distance)
     
     s2g_export$loadings <<- loadings_df %>% 
-      select(PC1, PC2, distance) %>% 
+      # don't limit what's exported here - 01/18/2022
+      # select(PC1, PC2, distance) %>% 
       mutate(PC1 = if(invert.x){-1*PC1} else{PC1},
              PC2 = if(invert.y){-1*PC2} else{PC2},
              angle = atan(PC2/PC1)*(360/(2*pi)), 
