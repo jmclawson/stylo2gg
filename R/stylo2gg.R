@@ -444,9 +444,12 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     top.loadings,
                     select.loadings, exception){
   s2g_export$z <<- df_z
-  the_classes <- rownames(df_z) %>%
-    strsplit("_") %>%
-    sapply(`[`,1)
+  
+  # don't overwrite the classes that are defined already in the_class - 2022-02-08
+  # the_classes <- rownames(df_z) %>%
+  #   strsplit("_") %>%
+  #   sapply(`[`,1)
+  the_classes <- the_class
 
   # Here, begin to add the machinery for "exception"
   # I still need to test it a lot!
