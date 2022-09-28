@@ -105,6 +105,12 @@
 #' @param legend Show or hide the legend with \code{TRUE} or \code{FALSE}.
 #' @param show.zero Toggle (TRUE / FALSE) for leaving space below the lowest distance to indicate zero
 #' @param count.labels Toggle (TRUE / FALSE) to show or hide counting numbers at the beginning of labels on a dendrogram. Useful for manually setting a \strong{\code{highlight.box}} when constructing a plot, but probably not ideal for the final version of a dendrogram. Defaults to FALSE
+#' @param loadings_spacer The spacer used to replace spaces in loading words, used for multiple-word n-grams. Define it as a quoted string. Defaults to \code{"_"}.
+#' @param loadings_line_color A string defining the lines leading to loading words. Defaults to \code{lightgray}.
+#' @param loadings_word_color A string defining the color used to display loading words. Defaults to \code{darkgray}.
+#' @param loadings_upper Toggle (TRUE / FALSE) to convert loadings into uppercase or to leave them alone. The default is FALSE, keeping them unconverted.
+#' @param plaintext Toggle (TRUE / FALSE) to show text labels as \code{geom_text()} layers (the default) or as \code{geom_label()} layers (when switched to \code{FALSE}.
+#' @param exception Still under development, this argument allows you to pull out one class (or multiple classes) of texts to build a PCA space without it and then to project that text onto the space. This may be useful for adding texts to previous analysis to build layers for understanding perceived differences in new contexts. Probably stay away from using it for now.
 #'
 #' @details
 #' Because \code{stylo2gg} builds on \code{ggplot2}, almost all
@@ -112,7 +118,7 @@
 #' using the plus-sign syntax documented by that package.
 #'
 #' @examples
-#' my_data <- stylo()
+#' my_data <- stylo::stylo()
 #' my_data %>% stylo2gg()
 #'
 #' # Move the legend
@@ -134,7 +140,12 @@ stylo2gg <- function(df, viz, features,
                      horiz = TRUE, axis.labels = FALSE,
                      highlight.nudge, highlight.single,
                      show.zero, highlight.box = NULL,
-                     exception) {
+                     exception,
+                     loadings_spacer = "_", 
+                     loadings_line_color = "lightgray", 
+                     loadings_word_color = "darkgray",
+                     loadings_upper = FALSE,
+                     plaintext = TRUE) {
   library(dendextend)
   library(ggplot2)
   library(dplyr)
@@ -145,15 +156,15 @@ stylo2gg <- function(df, viz, features,
   if (missing(num.features)) {
     num.features <- length(df$features.actually.used)
   }
-
+  
   if (!missing(features)) {
     num.features <- length(features)
   }
-
+  
   if (!missing(scaling)) {
     scaling <- FALSE
   }
-
+  
   if ("call" %in% names(df)) {
     my_call <- df$call
     my_call[1] <- substitute(data.frame())
@@ -161,7 +172,7 @@ stylo2gg <- function(df, viz, features,
   } else {
     my_call <- c()
   }
-
+  
   if (missing(viz)) {
     if ("analysis.type" %in% names(my_call)) {
       viz <- my_call$analysis.type
@@ -169,7 +180,7 @@ stylo2gg <- function(df, viz, features,
       viz <- "CA"
     }
   }
-
+  
   if (missing(top.loadings)) {
     if ("pca.visual.flavour" %in% names(my_call)) {
       if (my_call$pca.visual.flavour == "loadings") {
@@ -179,9 +190,9 @@ stylo2gg <- function(df, viz, features,
   } else if (top.loadings == "all") {
     top.loadings <- num.features
   }
-
+  
   legend_position <- "right"
-
+  
   if(viz == "PCR" | viz == "PCV"){
     if(missing(caption)){
       caption <- TRUE
@@ -192,34 +203,34 @@ stylo2gg <- function(df, viz, features,
       caption <- TRUE
     }
   }
-
+  
   if (missing(linkage)) {
     if ("linkage" %in% names(my_call)) {
       linkage <- my_call$linkage
     }
   }
-
+  
   if (missing(distance.measure)) {
     if ("distance.measure" %in% names(my_call)) {
       distance.measure <- my_call$distance.measure
     }
   }
-
+  
   if ("pca.visual.flavour" %in% names(my_call)) {
     if (my_call$pca.visual.flavour == "symbols" && missing(shapes)) {
       shapes <- TRUE
     }
   }
-
+  
   if (is.null(title)) {
     if ("custom.graph.title" %in% names(my_call)) {
       title <- my_call$custom.graph.title
     }
   }
-
+  
   the_caption <- NULL
   the_viz <- NULL
-
+  
   if (viz == "PCV") {
     the_viz <- "Covariance Matrix"
   } else if (viz == "PCR") {
@@ -240,26 +251,26 @@ stylo2gg <- function(df, viz, features,
     } else {
       the_dist <- as.character(distance.measure)
     }
-
+    
     if (the_dist == "delta") {
       the_dist <- "Classic Delta"
     }
     the_dist <- paste0(toupper(substr(the_dist, 1, 1)),
                        substr(the_dist, 2, nchar(the_dist)))
-
+    
     if (missing(linkage)) {
       the_linkage <- stylo.default.settings()$linkage
     } else {
       the_linkage <- linkage
     }
-
+    
     the_linkage <- paste0(toupper(substr(the_linkage, 1, 1)),
                           substr(the_linkage, 2, nchar(the_linkage)))
-
+    
     the_viz <- paste0(the_dist, " distance (",
                       the_linkage, " linkage)")
   }
-
+  
   if ("analyzed.features" %in% names(my_call)) {
     if (missing(features)) {
       if (my_call$analyzed.features == "c") {
@@ -277,15 +288,15 @@ stylo2gg <- function(df, viz, features,
   } else {
     the_features <-  "features"
   }
-
+  
   the_features <- paste(num.features, the_features)
-
+  
   if (is.null(the_caption)) {
     the_caption <- the_features
   } else {
     the_caption <- paste(the_caption, the_features, sep = " | ")
   }
-
+  
   if ("ngram.size" %in% names(my_call)) {
     if (my_call$ngram.size > 1) {
       the_ngrams <- paste0(my_call$ngram.size, "-grams")
@@ -296,7 +307,7 @@ stylo2gg <- function(df, viz, features,
       }
     }
   }
-
+  
   if ("culling.max" %in% names(my_call)) {
     the_culling <- paste0("Culled @ ",
                           my_call$culling.max,
@@ -307,65 +318,65 @@ stylo2gg <- function(df, viz, features,
       the_caption <- paste(the_caption, the_culling, sep = " | ")
     }
   }
-
+  
   if (axis.labels) {
     if (viz == "CA") {
       the_distance <- the_viz
       the_viz <- NULL
     }
   }
-
+  
   if (!is.null(the_viz)) {
     the_caption <- paste(the_caption, the_viz, sep = "\n")
   }
-
+  
   if (missing(viz)) {
     viz <- "pca"
     scaling <- TRUE
   }
-
+  
   if (missing(linkage)) {
     linkage <- "ward.D"
   }
-
+  
   if (missing(distance.measure)) {
     distance.measure <- "delta"
   }
-
+  
   if (viz == "PCR") {
     viz <- "pca"
     scaling <- TRUE
   }
-
+  
   if (!missing(features)) {
     df <- df$table.with.all.freqs %>%
       .[,features] %>%
       as.data.frame()
-
+    
     num.features <- length(features)
   } else {
     df <- df$table.with.all.freqs %>%
       .[,df$features.actually.used[1:num.features]] %>%
       as.data.frame()
   }
-
+  
   df_means <- colMeans(df)
   df_sd <- apply(df, 2, sd)
-
+  
   ## create table of z scores
   corpus_zscores <- list()
   for (row_i in rownames(df)) {
     thisrow <- (df[row_i, ] - df_means) / df_sd
     corpus_zscores[[row_i]] <- thisrow
   }
-
+  
   df_z <- data.frame(matrix(unlist(corpus_zscores),
                             nrow = length(corpus_zscores),
                             byrow = T))
-
+  
   rownames(df_z) <- names(corpus_zscores)
   colnames(df_z) <- colnames(corpus_zscores[[1]])
-
+  
   if (missing(classing)) {
     the_class <- df %>%
       rownames() %>%
@@ -374,27 +385,27 @@ stylo2gg <- function(df, viz, features,
   } else {
     the_class <- classing
   }
-
+  
   num_shapes <- the_class %>%
     unique() %>%
     length()
-
+  
   my_shapes <- rep(c(1, 3:11), length.out = num_shapes)
   if (!is.null(black)) {
     if (length(black) == 1) {
       my_shapes[black] <- 19
     }
   }
-
+  
   if (viz == "PCV") {
     viz <- "pca"
     df_z <- df
   }
-
+  
   if (missing(scaling)) {
     scaling <- FALSE
   }
-
+  
   if (viz == "pca" || viz == "PCA" || viz == "PCR") {
     the_plot <- s2g_pca(df_z, df_a, the_class, labeling,
                         shapes, legend, highlight,
@@ -402,7 +413,12 @@ stylo2gg <- function(df, viz, features,
                         title, caption, black, the_caption,
                         scaling, invert.x, invert.y,
                         top.loadings,
-                        select.loadings, exception)
+                        select.loadings, exception,
+                        loadings_spacer, 
+                        loadings_line_color, 
+                        loadings_word_color,
+                        loadings_upper,
+                        plaintext)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
     if (missing(highlight.single) && !is.null(highlight)) {
       highlight.single <- TRUE
@@ -419,7 +435,7 @@ stylo2gg <- function(df, viz, features,
                        black, distance.measure, highlight.single
     )
   }
-
+  
   if (!missing(title)) {
     if (!is.expression(title)) {
       if (title == "") {
@@ -427,12 +443,12 @@ stylo2gg <- function(df, viz, features,
       }
     }
   }
-
+  
   if (!is.null(title)) {
     the_plot <- the_plot +
       ggtitle(title)
   }
-
+  
   return(the_plot)
 }
 
@@ -442,9 +458,13 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     title, caption, black, the_caption,
                     scaling, invert.x, invert.y,
                     top.loadings,
-                    select.loadings, exception){
+                    select.loadings, exception,
+                    loadings_spacer, 
+                    loadings_line_color, 
+                    loadings_word_color,
+                    loadings_upper,
+                    plaintext){
   s2g_export$z <<- df_z
-  
   # don't overwrite the classes that are defined already in the_class - 2022-02-08
   # the_classes <- rownames(df_z) %>%
   #   strsplit("_") %>%
@@ -454,51 +474,51 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   # Here, begin to add the machinery for "exception"
   # I still need to test it a lot!
   # It occasionally seems to malfunction
-
+  
   if (!missing(exception)) {
     the_exception <- the_classes %in% exception
     # the_class <- the_class[!the_exception]
   } else {
     the_exception <- rep(FALSE, length(the_classes))
   }
-
+  
   # the_exception <- rep(FALSE, length(the_classes))
-
+  
   df_pca <- prcomp(df_z[!the_exception,], scale. = scaling)
-
+  
   if (!missing(exception)) {
     df_exception <-
       df_z[the_exception,] %>%
       as.matrix() %>%
       scale(df_pca$center, df_pca$scale)
-
+    
     df_exception <- df_exception %*% df_pca$rotation
-
+    
     s2g_export$exception <<- df_exception
-
+    
     df_pca$x <- rbind(df_pca$x, df_exception)
-
+    
     df_pca$x <- df_pca$x[rownames(df_z),]
   }
-
+  
   s2g_export$pca <<- df_pca
   s2g_export$pca_details <<- summary(df_pca)
   pca_list <- df_pca
   df_pca_rotation <- df_pca$rotation
-
+  
   pc_variance <- summary(df_pca)$importance[2,1:2]
-
+  
   df_pca <- df_pca$x %>%
     as.data.frame()
-
+  
   if (invert.x) {
     df_pca$PC1 <- df_pca$PC1 * -1
   }
-
+  
   if (invert.y) {
     df_pca$PC2 <- df_pca$PC2 * -1
   }
-
+  
   if (missing(the_class)) {
     df_pca$class <- df_pca %>%
       rownames() %>%
@@ -507,21 +527,21 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   } else {
     df_pca$class <- the_class
   }
-
+  
   df_pca$title <- df_pca %>%
     rownames() %>%
     strsplit("_") %>%
     sapply(`[`, 2)
-
+  
   df_pca$shorttitle <- df_pca$title %>%
     gsub(pattern = "[a-z]",
          replacement = "",
          x = .)
-
+  
   the_plot <- df_pca %>%
     ggplot(aes(PC1,
                PC2))
-
+  
   if (missing(top.loadings)) {
     if (missing(select.loadings)){
       the_plot <- the_plot +
@@ -535,7 +555,11 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                                top.loadings,
                                select.loadings,
                                invert.x,
-                               invert.y)
+                               invert.y,
+                               loadings_spacer, 
+                               loadings_line_color, 
+                               loadings_word_color,
+                               loadings_upper)
     }
   } else if (top.loadings > 0) {
     the_plot <- s2g_loadings(the_plot,
@@ -543,21 +567,25 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                              top.loadings,
                              select.loadings,
                              invert.x,
-                             invert.y)
+                             invert.y,
+                             loadings_spacer, 
+                             loadings_line_color, 
+                             loadings_word_color,
+                             loadings_upper)
   } else {
     message("no go")
     the_plot <- the_plot +
       geom_hline(yintercept = 0, color = "gray") +
       geom_vline(xintercept = 0, color = "gray")
   }
-
+  
   if (!missing(labeling)) {
     if (is.numeric(labeling)) {
       if (labeling == 0) {
         labeling <- df_a$table.with.all.freqs %>%
           row.names() %>%
           as.character()
-
+        
         shapes <- FALSE
         if (missing(legend)) {
           legend <- FALSE
@@ -569,24 +597,24 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
           sapply(`[`,labeling)
       }
     }}
-
+  
   if (!missing(labeling)){
     labeling.numeric <- suppressWarnings(all(!is.na(as.numeric(as.character(labeling)))))
   } else {
     labeling.numeric <- FALSE
   }
-
+  
   # if (!missing(exception)) {
   #   labeling <- labeling[!the_exception]
   # }
-
+  
   if (missing(labeling)) {
     if (missing(legend)) {
       legend <- TRUE
     }
-
+    
     # alpha_values <- rep(1, length(unique(df_pca$class)))
-
+    
     the_plot <- the_plot +
       geom_point(aes(shape = class,
                      color = class,
@@ -596,16 +624,16 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       scale_shape_manual(values = my_shapes) +
       scale_alpha_manual(values = rep(1, length(my_shapes))) +
       scale_size_manual(values = rep(3, length(my_shapes)))
-
+    
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
-
+    
   } else if (shapes) {
     if (missing(legend)) {
       legend <- TRUE
     }
-
+    
     # alpha_values <- rep(1, length(unique(df_pca$class)))
-
+    
     # library(ggrepel)
     the_plot <- the_plot +
       geom_point(aes(shape = class,
@@ -615,10 +643,10 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                  show.legend = legend) +
       scale_alpha_manual(values = rep(1, length(my_shapes))) +
       scale_size_manual(values = rep(3, length(my_shapes)))
-
-
+    
+    
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
-
+    
     the_plot <- the_plot +
       geom_text_repel(aes(label = labeling,
                           color = class),
@@ -628,15 +656,24 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     if (missing(legend)) {
       legend <- TRUE
     }
-
+    
     # the_plot <- s2g_highlight(the_plot, df_pca = df_pca, highlight = highlight)
-
-    the_plot <- the_plot +
-      geom_text(aes(label = labeling,
-                    color = class,
-                    group = class),
-                show.legend = legend)
-
+    
+    if(!plaintext) {
+      the_plot <- the_plot +
+        geom_label(aes(label = labeling,
+                       color = class,
+                       fill = class,
+                       group = class),
+                   show.legend = legend)
+    } else {
+      the_plot <- the_plot +
+        geom_text(aes(label = labeling,
+                      color = class,
+                      group = class),
+                  show.legend = legend)
+    }
+    
     if (labeling.numeric) {
       the_plot <- the_plot +
         guides(color = guide_legend(override.aes = aes(label = "#")))
@@ -645,18 +682,18 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   # the_plot <- s2g_highlight(the_plot,
   #                           df_pca = df_pca,
   #                           highlight = highlight)
-
+  
   if (!is.null(highlight)) {
     h <- highlight
-
+    
     silly_guides <-
       rep(0, df_pca$class %>%
             unique() %>%
             length()
       )
-
+    
     silly_guides[h] <- 1
-
+    
     the_plot <- the_plot +
       ggalt::geom_encircle(data = df_pca[df_pca$class %in% unique(df_pca$class)[h],],
                            aes(color = class),
@@ -672,14 +709,14 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     ymin = 0, ymax = 0),
                 color = "gray", fill = NA,
                 show.legend = FALSE)
-
+    
     if (labeling.numeric) {
       # message("Numeric labels")
-        the_plot <- the_plot +
-          guides(color = guide_legend(override.aes =
-                  list(label = "#",
-                       linetype = silly_guides)
-                  ))
+      the_plot <- the_plot +
+        guides(color = guide_legend(override.aes =
+                                      list(label = "#",
+                                           linetype = silly_guides)
+        ))
     } else {
       the_plot <- the_plot +
         guides(color = guide_legend(override.aes =
@@ -687,39 +724,39 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                                         linetype = silly_guides)
         ))
     }
-      }
-
+  }
+  
   if (!is.null(black)) {
     the_colors <- gg_color(num_shapes)
-
+    
     the_colors[black] <- "#000000"
-
+    
     the_plot <- the_plot +
       scale_color_manual(values = the_colors)
   }
-
+  
   y_label <- paste0("PC2 (",
                     round(pc_variance[2]*100,1),
                     "%)")
-
+  
   if (!missing(exception)) {
     y_label <- paste0("PC2 (",
                       round(pc_variance[2]*100,1),
                       "%*)")
   }
-
+  
   the_plot <- the_plot +
     theme_bw() +
     theme(legend.title = element_blank()) +
     labs(y = y_label)
-
+  
   if (caption && !is.null(the_caption)) {
     x_label <- paste0("PC1 (",
                       round(pc_variance[1]*100,1),
                       "%)",
                       "\n",
                       the_caption)
-
+    
     if (!missing(exception)) {
       x_label <- paste0("PC1 (",
                         round(pc_variance[1]*100,1),
@@ -729,16 +766,16 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                         "\n",
                         the_caption)
     }
-
+    
     the_plot <- the_plot +
       labs(x = x_label)
-
+    
     the_caption <- NULL
   } else {
     x_label <- paste0("PC1 (",
                       round(pc_variance[1]*100,1),
                       "%)")
-
+    
     if (!missing(exception)) {
       x_label <- paste0("PC1 (",
                         round(pc_variance[1]*100,1),
@@ -746,14 +783,14 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                         paste(exception, collapse = ", "),
                         ")")
     }
-
+    
     the_plot <- the_plot +
       labs(x = x_label)
   }
-
+  
   the_plot <- the_plot +
     theme(legend.position = legend_position)
-
+  
   if (caption) {
     if (!is.null(the_caption)) {
       the_plot <- the_plot +
@@ -770,11 +807,15 @@ s2g_loadings <- function(the_plot,
                          top.loadings,
                          select.loadings,
                          invert.x,
-                         invert.y) {
-
+                         invert.y,
+                         loadings_spacer, 
+                         loadings_line_color, 
+                         loadings_word_color,
+                         loadings_upper) {
+  
   df_pca <- as.data.frame(pca_list$x)
   df_pca_rotation <- as.data.frame(pca_list$rotation)
-
+  
   if (!missing(select.loadings)) {
     loading_words <- c()
     if (mode(select.loadings)=="list") {
@@ -814,11 +855,11 @@ s2g_loadings <- function(the_plot,
           t_i <- unlist(i)
           # here's what to do if it's
           # coordinates to aim near
-
+          
           if (invert.x) {
             t_i[1] <- t_i[1]*(-1)
           }
-
+          
           if (invert.y) {
             t_i[2] <- t_i[2]*(-1)
           }
@@ -827,7 +868,7 @@ s2g_loadings <- function(the_plot,
             get_nearest_loading_words(pca_list)
           loading_words <- loading_words %>%
             c(this_loading_words)
-
+          
         } else if (length(unlist(i)) > 2) {
           warning("Each item in a select.loadings list should not exceed length of 2, representing the coordinates of the desired loading.")
         }
@@ -836,16 +877,16 @@ s2g_loadings <- function(the_plot,
       # when select.loadings isn't a list
     }
   }
-
+  
   max_x <- max(df_pca$PC1)
   min_x <- min(df_pca$PC1)
   max_y <- max(df_pca$PC2)
   min_y <- min(df_pca$PC2)
   
   s2g_export$pca <<- df_pca
-
+  
   df_rotation <- as.data.frame(df_pca_rotation)
-
+  
   if (missing(select.loadings)) {
     df_rotation_abs <-
       data.frame(PC1 = df_rotation$PC1 %>%
@@ -856,15 +897,15 @@ s2g_loadings <- function(the_plot,
                    abs(),
                  word = rownames(df_rotation),
                  stringsAsFactors = FALSE)
-
+    
     pc1_words <-
       df_rotation_abs$word[order(df_rotation_abs$PC1,
                                  decreasing = TRUE)]
-
+    
     pc2_words <-
       df_rotation_abs$word[order(df_rotation_abs$PC2,
                                  decreasing = TRUE)]
-
+    
     # wait to limit word choices after distance is known
     loadings_df <- df_rotation %>% 
       mutate(distance = sqrt(PC1^2 + PC2^2)) %>% 
@@ -889,28 +930,28 @@ s2g_loadings <- function(the_plot,
     loadings_df <-
       df_rotation[rownames(df_rotation) %in% loading_words,1:2]
   }
-
+  
   max_pc1 <- max(df_rotation$PC1)
   min_pc1 <- min(df_rotation$PC1)
   max_pc2 <- max(df_rotation$PC2)
   min_pc2 <- min(df_rotation$PC2)
-
+  
   loadings_df_scaled <- loadings_df[,1:2]
   loadings_df_scaled[,1] <- loadings_df_scaled[,1] *
     (max_x - min_x)/(max_pc1 - min_pc1)
   loadings_df_scaled[,2] <- loadings_df_scaled[,2] *
     (max_y - min_y)/(max_pc2 - min_pc2)
-
+  
   # Standardize spaces in loadings
   feature_spaces <- strsplit(rownames(loadings_df),"[A-Za-z:.]") %>%
     unlist() %>%
     max() %>%
     nchar()
-
+  
   if (feature_spaces >= 2) {
     rownames(loadings_df) <- rownames(loadings_df) %>%
       gsub(pattern = "\\s{2,}",
-           replacement = "_",
+           replacement = loadings_spacer,
            x = .) %>%
       gsub(pattern = "\\s+",
            replacement = "",
@@ -918,41 +959,54 @@ s2g_loadings <- function(the_plot,
   } else {
     rownames(loadings_df) <- rownames(loadings_df) %>%
       gsub(pattern = "\\s{1,}",
-           replacement = "_",
+           replacement = loadings_spacer,
            x = .)
   }
-
+  
+  if(loadings_upper) {
+    rownames(loadings_df) <- 
+      rownames(loadings_df) |> 
+      toupper()
+  }
+  
   if (invert.x) {
     loadings_df_scaled$PC1 <- loadings_df_scaled$PC1 * -1
   }
-
+  
   if (invert.y) {
     loadings_df_scaled$PC2 <- loadings_df_scaled$PC2 * -1
   }
-
+  
   the_plot <- the_plot +
     geom_segment(data = loadings_df_scaled,
                  aes(x = 0,
                      y = 0,
-                     xend = PC1 * 0.72,
-                     yend = PC2 * 0.72),
-                 arrow = arrow(length = unit(0.2,"cm")),
-                 color = "gray") +
+                     xend = PC1 * 0.75,
+                     yend = PC2 * 0.75),
+                 # arrow = arrow(length = unit(0.2,"cm")),
+                 color = loadings_line_color) +
+    geom_label(data = loadings_df_scaled,
+               aes(x = PC1*0.75,
+                   y = PC2*0.75,
+                   label = rownames(loadings_df)),
+               size = 4,
+               color = "white",
+               fill = alpha(c("white"),0.5)) +
     geom_text(data = loadings_df_scaled,
               aes(x = PC1*0.75,
                   y = PC2*0.75,
                   label = rownames(loadings_df)),
               size = 5,
-              color = "darkgray")
-
+              color = loadings_word_color)
+  
   return(the_plot)
 }
 
 get_class_loading_words <- function(clue,
                                     pca_list) {
-
+  
   df_pca <- pca_list$x
-
+  
   this_sub_x <-
     df_pca[grep(clue,
                 rownames(df_pca)),1] %>%
@@ -961,11 +1015,11 @@ get_class_loading_words <- function(clue,
     df_pca[grep(clue,
                 rownames(df_pca)),2] %>%
     mean()
-
+  
   loading_words <- this_sub_x %>%
     c(this_sub_y) %>%
     get_nearest_loading_words(pca_list)
-
+  
   return(loading_words)
 }
 
@@ -974,7 +1028,7 @@ get_nearest_loading_words <- function(xy,
   lo_words <- c()
   df_pca <- pca_list$x
   df_pca_rotation <- pca_list$rotation
-
+  
   # using manhattan distance here
   # (would euclidean be better?)
   # nearest_loading <-
@@ -984,22 +1038,22 @@ get_nearest_loading_words <- function(xy,
   # nearest_loading <- nearest_loading +
   #   abs(df_pca_rotation[,2] - xy[2]) %>%
   #   as.data.frame()
-
+  
   # euclidean seems better for angle, though
   # it can overshoot a position after scaling.
   # I think this is worth it.
   nearest_loading <-
     (df_pca_rotation[,1] - xy[1])^2 %>%
     as.data.frame()
-
+  
   nearest_loading <- nearest_loading +
     (df_pca_rotation[,2] - xy[2])^2 %>%
     as.data.frame()
-
+  
   nearest_loading <- nearest_loading %>%
     sqrt() %>%
     as.data.frame()
-
+  
   nearest_loading <-
     nearest_loading[order(nearest_loading[,1]),,
                     drop = FALSE] %>%
@@ -1009,7 +1063,7 @@ get_nearest_loading_words <- function(xy,
   loading_words <- lo_words %>%
     c(nearest_loading) %>%
     unique()
-
+  
   return(loading_words)
 }
 
@@ -1045,30 +1099,30 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
       the_labels <- labeling
     }
   }
-
+  
   if (!distance.measure == "euclidean") {
     df <- df_z
   }
-
+  
   if (labeling != 0 && missing(legend)) {
     legend <- TRUE
   }
-
+  
   the_colors <- gg_color(length(unique(the_class)))
-
+  
   if (!is.null(black)) {
     the_colors[black] <- "#000000"
   }
-
+  
   if (!missing(labeling)) {
     # rownames(df) <- labeling
   }
-
+  
   rownames(df) <- paste0(" ", rownames(df))
-
+  
   the_dend <- df %>%
     as.matrix()
-
+  
   if (distance.measure == "argamon") {
     the_dend <- the_dend %>%
       dist.argamon()
@@ -1088,7 +1142,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     the_dend <- the_dend %>%
       dist(method = distance.measure)
   }
-
+  
   the_dend <- the_dend %>%
     as.dist() %>%
     hclust(method = linkage) %>%
@@ -1097,51 +1151,51 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     # set("branches_k_color", k = 3) %>%
     set("labels_cex", 0.7) %>%
     set("hang_leaves", 0)
-
+  
   the_shapes <- the_class %>%
     as.factor() %>%
     as.numeric() %>%
     .[order.dendrogram(the_dend)]
-
+  
   # the_newshape <- my_shapes
   the_newshape <- rep(c(1, 3:11), length.out = num_shapes)
-
+  
   labels_colors(the_dend) <- the_class %>%
     as.factor() %>%
     .[order.dendrogram(the_dend)] %>%
     the_colors[.]
-
+  
   if (shapes) {
     the_dend <- the_dend %>%
       set("leaves_pch", my_shapes[the_shapes]) %>%
       set("leaves_col", labels_colors(the_dend)) %>%
       set("leaves_cex", 2)
-
+    
     if (missing(legend)) {
       legend <- TRUE
     }
   }
-
+  
   if (missing(legend)) {
     legend <- FALSE
   }
-
+  
   the_ggdend <- the_dend %>%
     as.ggdend()
-
+  
   # the_ggdend$labels$class <- the_ggdend$labels$label %>%
   #   as.character() %>%
   #   strsplit("_") %>%
   #   sapply(`[`,1)
-
+  
   match_df <- df_a$table.with.all.freqs
-
+  
   the_ggdend$labels <-
     the_ggdend$labels[match(rownames(match_df),
                             gsub(" ","",as.character(the_ggdend$labels$label))),]
-
+  
   the_ggdend$labels$class <- the_class
-
+  
   if (!missing(labeling)) {
     if (is.numeric(labeling)) {
       if (labeling == 0) {
@@ -1157,11 +1211,11 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
       the_ggdend$labels$labels <- labeling
     }
   }
-
+  
   the_gplot <- ggplot() +
     geom_segment(data = the_ggdend$segments,
                  aes(x = x, y = y, xend = xend, yend = yend))
-
+  
   if (!horiz) {
     the_nudge <- -0.09
     point_shift <- -0.05
@@ -1173,14 +1227,14 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
     the_angle <- 0
     the_hjust <- 0
   }
-
+  
   if (shapes) {
     text_legend <- FALSE
   } else {
     text_legend <- legend
     the_nudge <- 0
   }
-
+  
   if(count.labels){
     the_gplot <- the_gplot +
       geom_text(data = the_ggdend$labels,
@@ -1197,7 +1251,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                 angle = the_angle, hjust = the_hjust, nudge_y = the_nudge,
                 show.legend = text_legend)
   }
-
+  
   if (shapes) {
     the_gplot <- the_gplot +
       geom_point(data = the_ggdend$labels,
@@ -1207,7 +1261,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                      color = class)) +
       scale_shape_manual(values = my_shapes)
   }
-
+  
   if (horiz && !axis.labels) {
     the_gplot <- the_gplot +
       coord_flip() +
@@ -1215,21 +1269,21 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                                                round_any(max(n),0.5, ceiling),
                                                0.5))
   }
-
+  
   the_plot <- the_gplot +
     theme_dendro() +
     theme(legend.key = element_blank()) +
     theme(legend.title = element_blank())
-
+  
   if (axis.labels) {
-
+    
     # the_plot <- the_plot +
     #   theme_dendro() +
     #   theme(legend.key = element_blank()) +
     #   theme(legend.title = element_blank())
-
+    
     # the_plot <- the_dend %>% ggplot(horiz = horiz)
-
+    
     if (!horiz) {
       top_limit <- the_ggdend$segments$y %>% max()
       the_plot <- the_plot +
@@ -1242,7 +1296,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                                                     round_any(max(n),0.5, ceiling),
                                                     0.5))
       # expand_limits(y = c(top_limit,0))
-
+      
       if ("lemon" %in% rownames(installed.packages())) {
         # library(lemon)
         the_plot <- the_plot +
@@ -1255,7 +1309,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                                the_caption)
         the_caption <- NULL
       }
-
+      
       top_limit <- the_ggdend$segments$y %>% max()
       the_plot <- the_plot +
         labs(y = the_distance) +
@@ -1263,7 +1317,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
               axis.line.x = element_line(color = "black", size = 0.5),
               axis.ticks.x = element_line(color = "black", size = 0.5),
               axis.text.x = element_text(colour = "black"))
-
+      
       if ("lemon" %in% rownames(installed.packages())) {
         # library(lemon)
         the_plot <- the_plot +
@@ -1283,23 +1337,23 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
       the_plot <- the_plot +
         expand_limits(y = 0)
     }
-
+    
   } else {
     # the_plot <- the_dend %>% ggplot(horiz = horiz)
   }
-
+  
   if (!is.null(black)) {
     the_colors <- gg_color(num_shapes)
-
+    
     the_colors[black] <- "#000000"
-
+    
     the_plot <- the_plot +
       scale_color_manual(values = the_colors)
   }
-
+  
   the_ggdend$segments$kind[the_ggdend$segments$x == the_ggdend$segments$xend] <- "horizontal"
   the_ggdend$segments$kind[the_ggdend$segments$y==the_ggdend$segments$yend] <- "vertical"
-
+  
   if(!is.null(highlight) |!is.null(highlight.box)) {
     the_plot <- s2g_highlight_rect(the_plot = the_plot,
                                    the_ggdend = the_ggdend,
@@ -1309,14 +1363,14 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
                                    highlight.single,
                                    highlight.box, legend)
   }
-
+  
   if (caption) {
     if (!is.null(the_caption)) {
       the_plot <- the_plot +
         labs(caption = the_caption)
     }
   }
-
+  
   return(the_plot)
 }
 
@@ -1324,7 +1378,7 @@ s2g_hc <- function(df_z, df, df_a, the_distance,
 
 s2g_highlight <- function(the_plot, df_pca, highlight) {
   if (!is.null(highlight)) {
-
+    
     for (h in 1:length(highlight)) {
       # add highlight for single-item classes
       if (nrow(df_pca[df_pca$class == unique(df_pca$class)[highlight[h]],])==1){
@@ -1348,7 +1402,7 @@ s2g_highlight <- function(the_plot, df_pca, highlight) {
       # scale_linetype_manual(values = the_lines[order(highlight)]) +
       guides(alpha = FALSE, linetype = FALSE) +
       scale_alpha(range = c(1, 1), limits = c(3.1, 4), na.value = 0)
-
+    
   }
   return(the_plot)
 }
@@ -1360,34 +1414,34 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                                highlight.nudge,
                                highlight.single,
                                highlight.box, legend) {
-
+  
   if(!is.null(highlight)) {
-
+    
     h <- highlight
     tc <- sort(unique(the_ggdend$labels$class))[h]
-
+    
     the_coords <-
       the_ggdend$labels[the_ggdend$labels$class == tc,"x"]
     the_coords <- sort(the_coords)
-
+    
     if (length(h) > 1) {
       message("Dendrograms can only highlight one class at a time. Use the geom_rect() function from ggplot2 to highlight manually. Alternatively, set the highlight.box argument to a range.")
     }
   }
-
+  
   if (!is.null(highlight.box)) {
     the_coords <- sort(highlight.box)
   }
-
+  
   start <- c(1, which(diff(the_coords) != 1 & diff(the_coords) != 0) + 1)
   end <- c(start - 1, length(the_coords))
   end <- end[end > 0]
-
+  
   if (highlight.single) {
     start <- 1
     end <- length(the_coords)
   }
-
+  
   if (length(start) > 1) {
     the_branch_max <- c()
     the_branch_min <- c()
@@ -1405,22 +1459,22 @@ s2g_highlight_rect <- function(the_plot = the_plot,
         names() %>%
         as.numeric() %>%
         max()
-
+      
       the_branch_min[i] <-
         from1$y[round(from1$y,5) ==
                   round(the_branch_min[i],5)] %>%
         max(na.rm = TRUE)
-
+      
       from2 <- the_ggdend$segments$y
       the_branch_max[i] <-
         from2[the_ggdend$segments$yend ==
                 the_branch_min[i]] %>%
         max()
-
+      
       if (top == bottom) {
         the_branch_max[i] <- the_branch_min[i]*1.1
       }
-
+      
       if (!missing(highlight.nudge)) {
         h.n <- highlight.nudge
       } else {
@@ -1432,7 +1486,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                    ymin = -0.1 - h.n,
                    ymax = mean(c(the_branch_min[i],
                                  the_branch_max[i])))
-
+      
       if (!is.null(highlight)) {
         the_rect$class <- tc
         silly_guides <-
@@ -1441,7 +1495,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
                 length()
           )
         silly_guides[h] <- 2
-
+        
         the_plot <- the_plot +
           geom_rect(data = the_rect,
                     aes(xmin = xmin,
@@ -1472,7 +1526,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
     from1 <- the_ggdend$segments
     bottom <- the_coords[start]
     top <- the_coords[end]
-
+    
     this_tab <- from1$y[from1$x >= bottom &
                           from1$x <= top] %>%
       table()
@@ -1482,44 +1536,44 @@ s2g_highlight_rect <- function(the_plot = the_plot,
       names() %>%
       as.numeric() %>%
       max()
-
+    
     the_branch_min <- from1$y[round(from1$y,5) ==
                                 round(the_branch_min,5)]
-
+    
     # }
-
+    
     the_branch_max <-
       from1$y[from1$yend == the_branch_min] %>%
       max()
-
+    
     if (the_coords[start] == the_coords[end]) {
       the_branch_max <- the_branch_min*1.1
     }
-
+    
     label_widths <- the_ggdend$labels$labels %>%
       strwidth("inches")
-
+    
     the_ggdend$labels$label_widths <- label_widths
-
+    
     the_ggdend$labels$label_ymin <-
       the_ggdend$labels$y -
       (the_ggdend$labels$label_widths / 2)
-
+    
     # label_ymin <- min(the_ggdend$labels$label_ymin)
     if (!missing(highlight.nudge)) {
       h.n <- highlight.nudge
     } else {
       h.n <- 0
     }
-
+    
     label_ymin <- -0.1 - h.n
-
+    
     the_rect <- data.frame(xmin = the_coords[start] - 0.5,
                            xmax = the_coords[end] + 0.5,
                            ymin = label_ymin,
                            ymax = mean(c(the_branch_min,
                                          the_branch_max)))
-
+    
     if (!is.null(highlight)) {
       the_rect$class <- tc
       silly_guides <-
@@ -1528,7 +1582,7 @@ s2g_highlight_rect <- function(the_plot = the_plot,
               length()
         )
       silly_guides[h] <- 2
-
+      
       the_plot <- the_plot +
         geom_rect(data = the_rect,
                   aes(xmin = xmin,
