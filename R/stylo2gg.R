@@ -465,10 +465,12 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     loadings_upper,
                     plaintext){
   s2g_export$z <<- df_z
-  the_classes <- rownames(df_z) %>%
-    strsplit("_") %>%
-    sapply(`[`,1)
-  
+  # don't overwrite the classes that are defined already in the_class - 2022-02-08
+  # the_classes <- rownames(df_z) %>%
+  #   strsplit("_") %>%
+  #   sapply(`[`,1)
+  the_classes <- the_class
+
   # Here, begin to add the machinery for "exception"
   # I still need to test it a lot!
   # It occasionally seems to malfunction
@@ -910,7 +912,8 @@ s2g_loadings <- function(the_plot,
       arrange(-distance)
     
     s2g_export$loadings <<- loadings_df %>% 
-      select(PC1, PC2, distance) %>% 
+      # don't limit what's exported here - 01/18/2022
+      # select(PC1, PC2, distance) %>% 
       mutate(PC1 = if(invert.x){-1*PC1} else{PC1},
              PC2 = if(invert.y){-1*PC2} else{PC2},
              angle = atan(PC2/PC1)*(360/(2*pi)), 
