@@ -31,7 +31,12 @@ stylo2gg(
   highlight.single,
   show.zero,
   highlight.box = NULL,
-  exception
+  exception,
+  loadings_spacer = "_",
+  loadings_line_color = "lightgray",
+  loadings_word_color = "darkgray",
+  loadings_upper = FALSE,
+  plaintext = TRUE
 )
 }
 \arguments{
@@ -165,6 +170,18 @@ edge of a label.}
 
 \item{highlight.box}{On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram); it might be helpful to toggle the \strong{\code{count.labels}} parameter to
 \code{TRUE} to avoid having to count large data sets.}
+
+\item{exception}{Still under development, this argument allows you to pull out one class (or multiple classes) of texts to build a PCA space without it and then to project that text onto the space. This may be useful for adding texts to previous analysis to build layers for understanding perceived differences in new contexts. Probably stay away from using it for now.}
+
+\item{loadings_spacer}{The spacer used to replace spaces in loading words, used for multiple-word n-grams. Define it as a quoted string. Defaults to \code{"_"}.}
+
+\item{loadings_line_color}{A string defining the lines leading to loading words. Defaults to \code{lightgray}.}
+
+\item{loadings_word_color}{A string defining the color used to display loading words. Defaults to \code{darkgray}.}
+
+\item{loadings_upper}{Toggle (TRUE / FALSE) to convert loadings into uppercase or to leave them alone. The default is FALSE, keeping them unconverted.}
+
+\item{plaintext}{Toggle (TRUE / FALSE) to show text labels as \code{geom_text()} layers (the default) or as \code{geom_label()} layers (when switched to \code{FALSE}.}
 }
 \description{
 Visualize \code{stylo} data with \code{ggplot2}.
@@ -175,7 +192,7 @@ commands available to that package should work here as well,
 using the plus-sign syntax documented by that package.
 }
 \examples{
-my_data <- stylo()
+my_data <- stylo::stylo()
 my_data \%>\% stylo2gg()
 
 # Move the legend
