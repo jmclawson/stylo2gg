@@ -59,11 +59,11 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     as.data.frame()
   
   if (invert.x) {
-    df_pca$PC1 <- df_pca$PC1 * -1
+    df_pca[[pc.x]] <- df_pca[[pc.x]] * -1
   }
   
   if (invert.y) {
-    df_pca$PC2 <- df_pca$PC2 * -1
+    df_pca[[pc.y]] <- df_pca[[pc.y]] * -1
   }
   
   if (missing(the_class)) {
@@ -86,6 +86,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
          x = .)
   
   the_plot <- df_pca %>%
+    # need to rework for pc.x and pc.y
     ggplot(aes(PC1,
                PC2))
   
@@ -286,11 +287,13 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       scale_color_manual(values = the_colors)
   }
   
+  # Need to rework for pc.x and pc.y
   y_label <- paste0("PC2 (",
                     round(pc_variance[2]*100,1),
                     "%)")
   
   if (!missing(exception)) {
+    # Need to rework for pc.x and pc.y
     y_label <- paste0("PC2 (",
                       round(pc_variance[2]*100,1),
                       "%*)")
@@ -302,6 +305,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     labs(y = y_label)
   
   if (caption && !is.null(the_caption)) {
+    # Need to rework for pc.x and pc.y
     x_label <- paste0("PC1 (",
                       round(pc_variance[1]*100,1),
                       "%)",
@@ -309,6 +313,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                       the_caption)
     
     if (!missing(exception)) {
+      # Need to rework for pc.x and pc.y
       x_label <- paste0("PC1 (",
                         round(pc_variance[1]*100,1),
                         "% except ",
@@ -323,11 +328,13 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     
     the_caption <- NULL
   } else {
+    # Need to rework for pc.x and pc.y
     x_label <- paste0("PC1 (",
                       round(pc_variance[1]*100,1),
                       "%)")
     
     if (!missing(exception)) {
+      # Need to rework for pc.x and pc.y
       x_label <- paste0("PC1 (",
                         round(pc_variance[1]*100,1),
                         "% except ",

@@ -32,7 +32,7 @@ s2g_loadings <- function(the_plot,
           if (mode(t_i) == "character") {
             this_loading_words <-
               t_i %>%
-              get_class_loading_words(pca_list)
+              get_class_loading_words(pca_list, pc.x, pc.y)
             loading_words <- loading_words %>%
               c(this_loading_words)
           } else {
@@ -43,7 +43,7 @@ s2g_loadings <- function(the_plot,
               sort()
             this_loading_words <-
               classes[t_i] %>%
-              get_class_loading_words(pca_list)
+              get_class_loading_words(pca_list, pc.x, pc.y)
             loading_words <- loading_words %>%
               c(this_loading_words)
           }
@@ -124,15 +124,15 @@ s2g_loadings <- function(the_plot,
     
   } else {
     loadings_df <-
-      df_rotation[rownames(df_rotation) %in% loading_words,1:2]
+      df_rotation[rownames(df_rotation) %in% loading_words,pc.x:pc.y]
   }
   
-  max_pc1 <- max(df_rotation$PC1)
-  min_pc1 <- min(df_rotation$PC1)
-  max_pc2 <- max(df_rotation$PC2)
-  min_pc2 <- min(df_rotation$PC2)
+  max_pc1 <- max(df_rotation[[pc.x]])
+  min_pc1 <- min(df_rotation[[pc.x]])
+  max_pc2 <- max(df_rotation[[pc.y]])
+  min_pc2 <- min(df_rotation[[pc.y]])
   
-  loadings_df_scaled <- loadings_df[,1:2]
+  loadings_df_scaled <- loadings_df[,pc.x:pc.y:pc.x:pc.y]
   loadings_df_scaled[,1] <- loadings_df_scaled[,1] *
     (max_x - min_x)/(max_pc1 - min_pc1)
   loadings_df_scaled[,2] <- loadings_df_scaled[,2] *
@@ -166,17 +166,18 @@ s2g_loadings <- function(the_plot,
   }
   
   if (invert.x) {
-    loadings_df_scaled$PC1 <- loadings_df_scaled$PC1 * -1
+    loadings_df_scaled[[1]] <- loadings_df_scaled[[1]] * -1
   }
   
   if (invert.y) {
-    loadings_df_scaled$PC2 <- loadings_df_scaled$PC2 * -1
+    loadings_df_scaled[[2]] <- loadings_df_scaled[[2]] * -1
   }
   
   the_plot <- the_plot +
     geom_segment(data = loadings_df_scaled,
                  aes(x = 0,
                      y = 0,
+                     # need to rework this for pc.x and pc.y
                      xend = PC1 * 0.75,
                      yend = PC2 * 0.75),
                  # arrow = arrow(length = unit(0.2,"cm")),
