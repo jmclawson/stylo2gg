@@ -56,14 +56,20 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   pc_variance <- summary(df_pca)$importance[2,1:2]
   
   df_pca <- df_pca$x %>%
-    as.data.frame()
+    as.data.frame() %>%
+    # trying to rename relevant component columns to 
+    # generic column names "pc_x" and "pc_y", but I may 
+    # have to come back here and convert pc.x and pc.y to 
+    # something other than those variable names
+    rename("pc_x" = pc.x,
+           "pc_y" = pc.y)
   
   if (invert.x) {
-    df_pca[[pc.x]] <- df_pca[[pc.x]] * -1
+    df_pca$pc_x <- df_pca$pc_x * -1
   }
   
   if (invert.y) {
-    df_pca[[pc.y]] <- df_pca[[pc.y]] * -1
+    df_pca$pc_y <- df_pca$pc_y * -1
   }
   
   if (missing(the_class)) {
@@ -86,9 +92,9 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
          x = .)
   
   the_plot <- df_pca %>%
-    # need to rework for pc.x and pc.y
-    ggplot(aes(PC1,
-               PC2))
+    # trying to rework for pc.x and pc.y
+    ggplot(aes(pc_x,
+               pc_y))
   
   if (missing(top.loadings)) {
     if (missing(select.loadings)){
@@ -287,14 +293,14 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
       scale_color_manual(values = the_colors)
   }
   
-  # Need to rework for pc.x and pc.y
-  y_label <- paste0("PC2 (",
+  # trying to rework for pc.x and pc.y
+  y_label <- paste0("PC", pc.y, " (",
                     round(pc_variance[2]*100,1),
                     "%)")
   
   if (!missing(exception)) {
-    # Need to rework for pc.x and pc.y
-    y_label <- paste0("PC2 (",
+    # trying to rework for pc.x and pc.y
+    y_label <- paste0("PC", pc.y, " (",
                       round(pc_variance[2]*100,1),
                       "%*)")
   }
@@ -305,16 +311,16 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     labs(y = y_label)
   
   if (caption && !is.null(the_caption)) {
-    # Need to rework for pc.x and pc.y
-    x_label <- paste0("PC1 (",
+    # trying to rework for pc.x and pc.y
+    x_label <- paste0("PC", pc.x, " (",
                       round(pc_variance[1]*100,1),
                       "%)",
                       "\n",
                       the_caption)
     
     if (!missing(exception)) {
-      # Need to rework for pc.x and pc.y
-      x_label <- paste0("PC1 (",
+      # trying to rework for pc.x and pc.y
+      x_label <- paste0("PC", pc.x, " (",
                         round(pc_variance[1]*100,1),
                         "% except ",
                         paste(exception, collapse = ", "),
@@ -328,14 +334,14 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
     
     the_caption <- NULL
   } else {
-    # Need to rework for pc.x and pc.y
-    x_label <- paste0("PC1 (",
+    # trying to rework for pc.x and pc.y
+    x_label <- paste0("PC", pc.x, " (",
                       round(pc_variance[1]*100,1),
                       "%)")
     
     if (!missing(exception)) {
-      # Need to rework for pc.x and pc.y
-      x_label <- paste0("PC1 (",
+      # trying to rework for pc.x and pc.y
+      x_label <- paste0("PC", pc.x, " (",
                         round(pc_variance[1]*100,1),
                         "% except ",
                         paste(exception, collapse = ", "),

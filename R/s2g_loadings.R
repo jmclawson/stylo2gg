@@ -17,8 +17,8 @@ s2g_loadings <- function(the_plot,
     if (mode(select.loadings)=="list") {
       loadings_df <-
         data.frame(loading=c(),
-                   PC1=numeric(),
-                   PC2=numeric(),
+                   pc_x = numeric(),
+                   pc_y = numeric(),
                    stringsAsFactors = FALSE)
       for (i in select.loadings) {
         if (is.call(unlist(i))) {
@@ -74,10 +74,10 @@ s2g_loadings <- function(the_plot,
     }
   }
   
-  max_x <- max(df_pca$PC1)
-  min_x <- min(df_pca$PC1)
-  max_y <- max(df_pca$PC2)
-  min_y <- min(df_pca$PC2)
+  max_x <- max(df_pca$pc_x)
+  min_x <- min(df_pca$pc_x)
+  max_y <- max(df_pca$pc_y)
+  min_y <- min(df_pca$pc_y)
   
   s2g_export$pca <<- df_pca
   
@@ -85,36 +85,34 @@ s2g_loadings <- function(the_plot,
   
   if (missing(select.loadings)) {
     df_rotation_abs <-
-      data.frame(PC1 = df_rotation$PC1 %>%
+      data.frame(pc_x = df_rotation$pc_x %>%
                    as.numeric() %>%
                    abs(),
-                 PC2 = df_rotation$PC2 %>%
+                 pc_y = df_rotation$pc_y %>%
                    as.numeric() %>%
                    abs(),
                  word = rownames(df_rotation),
                  stringsAsFactors = FALSE)
     
-    pc1_words <-
-      df_rotation_abs$word[order(df_rotation_abs$PC1,
+    pc_x_words <-
+      df_rotation_abs$word[order(df_rotation_abs$pc_x,
                                  decreasing = TRUE)]
     
-    pc2_words <-
-      df_rotation_abs$word[order(df_rotation_abs$PC2,
+    pc_y_words <-
+      df_rotation_abs$word[order(df_rotation_abs$pc_y,
                                  decreasing = TRUE)]
     
     # wait to limit word choices after distance is known
     loadings_df <- df_rotation %>% 
-      mutate(distance = sqrt(PC1^2 + PC2^2)) %>% 
+      mutate(distance = sqrt(pc_x^2 + pc_y^2)) %>% 
       arrange(-distance)
     
     s2g_export$loadings <<- loadings_df %>% 
-      # don't limit what's exported here - 01/18/2022
-      # select(PC1, PC2, distance) %>% 
-      mutate(PC1 = if(invert.x){-1*PC1} else{PC1},
-             PC2 = if(invert.y){-1*PC2} else{PC2},
-             angle = atan(PC2/PC1)*(360/(2*pi)), 
+      mutate(pc_x = if(invert.x){-1*pc_x} else{pc_x},
+             pc_y = if(invert.y){-1*pc_y} else{pc_y},
+             angle = atan(pc_y/pc_x)*(360/(2*pi)), 
              angle = case_when(
-               PC1 < 0   ~ angle + 180, 
+               pc_x < 0   ~ angle + 180, 
                angle < 0 ~ angle + 360, 
                TRUE      ~ angle) %>% 
                round(2))
@@ -124,19 +122,20 @@ s2g_loadings <- function(the_plot,
     
   } else {
     loadings_df <-
-      df_rotation[rownames(df_rotation) %in% loading_words,pc.x:pc.y]
+      df_rotation[rownames(df_rotation) %in% loading_words, 
+                  c(pc.x, pc.y)]
   }
   
-  max_pc1 <- max(df_rotation[[pc.x]])
-  min_pc1 <- min(df_rotation[[pc.x]])
-  max_pc2 <- max(df_rotation[[pc.y]])
-  min_pc2 <- min(df_rotation[[pc.y]])
+  max_pc_x <- max(df_rotation[[pc.x]])
+  min_pc_x <- min(df_rotation[[pc.x]])
+  max_pc_y <- max(df_rotation[[pc.y]])
+  min_pc_y <- min(df_rotation[[pc.y]])
   
-  loadings_df_scaled <- loadings_df[,pc.x:pc.y:pc.x:pc.y]
+  loadings_df_scaled <- loadings_df[,c(pc.x, pc.y)]
   loadings_df_scaled[,1] <- loadings_df_scaled[,1] *
-    (max_x - min_x)/(max_pc1 - min_pc1)
+    (max_x - min_x)/(max_pc_x - min_pc_x)
   loadings_df_scaled[,2] <- loadings_df_scaled[,2] *
-    (max_y - min_y)/(max_pc2 - min_pc2)
+    (max_y - min_y)/(max_pc_y - min_pc_y)
   
   # Standardize spaces in loadings
   feature_spaces <- strsplit(rownames(loadings_df),"[A-Za-z:.]") %>%
@@ -177,21 +176,21 @@ s2g_loadings <- function(the_plot,
     geom_segment(data = loadings_df_scaled,
                  aes(x = 0,
                      y = 0,
-                     # need to rework this for pc.x and pc.y
-                     xend = PC1 * 0.75,
-                     yend = PC2 * 0.75),
+                     # trying to rework for pc.x and pc.y
+                     xend = pc_x * 0.75,
+                     yend = pc_y * 0.75),
                  # arrow = arrow(length = unit(0.2,"cm")),
                  color = loadings_line_color) +
     geom_label(data = loadings_df_scaled,
-               aes(x = PC1*0.75,
-                   y = PC2*0.75,
+               aes(x = pc_x * 0.75,
+                   y = pc_y * 0.75,
                    label = rownames(loadings_df)),
                size = 4,
                color = "white",
                fill = alpha(c("white"),0.5)) +
     geom_text(data = loadings_df_scaled,
-              aes(x = PC1*0.75,
-                  y = PC2*0.75,
+              aes(x = pc_x * 0.75,
+                  y = pc_ y * 0.75,
                   label = rownames(loadings_df)),
               size = 5,
               color = loadings_word_color)
