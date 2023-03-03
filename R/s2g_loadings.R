@@ -4,10 +4,10 @@ s2g_loadings <- function(the_plot,
                          select.loadings, pc.x, pc.y,
                          invert.x,
                          invert.y,
-                         loadings_spacer, 
-                         loadings_line_color, 
-                         loadings_word_color,
-                         loadings_upper) {
+                         loadings.spacer, 
+                         loadings.line.color, 
+                         loadings.word.color,
+                         loadings.upper) {
   
   df_pca <- as.data.frame(pca_list$x)
   df_pca_rotation <- as.data.frame(pca_list$rotation)
@@ -146,7 +146,7 @@ s2g_loadings <- function(the_plot,
   if (feature_spaces >= 2) {
     rownames(loadings_df) <- rownames(loadings_df) %>%
       gsub(pattern = "\\s{2,}",
-           replacement = loadings_spacer,
+           replacement = loadings.spacer,
            x = .) %>%
       gsub(pattern = "\\s+",
            replacement = "",
@@ -154,13 +154,13 @@ s2g_loadings <- function(the_plot,
   } else {
     rownames(loadings_df) <- rownames(loadings_df) %>%
       gsub(pattern = "\\s{1,}",
-           replacement = loadings_spacer,
+           replacement = loadings.spacer,
            x = .)
   }
   
-  if(loadings_upper) {
+  if(loadings.upper) {
     rownames(loadings_df) <- 
-      rownames(loadings_df) |> 
+      rownames(loadings_df) %>% 
       toupper()
   }
   
@@ -180,7 +180,7 @@ s2g_loadings <- function(the_plot,
                      xend = pc_x * 0.75,
                      yend = pc_y * 0.75),
                  # arrow = arrow(length = unit(0.2,"cm")),
-                 color = loadings_line_color) +
+                 color = loadings.line.color) +
     geom_label(data = loadings_df_scaled,
                aes(x = pc_x * 0.75,
                    y = pc_y * 0.75,
@@ -190,10 +190,10 @@ s2g_loadings <- function(the_plot,
                fill = alpha(c("white"),0.5)) +
     geom_text(data = loadings_df_scaled,
               aes(x = pc_x * 0.75,
-                  y = pc_ y * 0.75,
+                  y = pc_y * 0.75,
                   label = rownames(loadings_df)),
               size = 5,
-              color = loadings_word_color)
+              color = loadings.word.color)
   
   return(the_plot)
 }

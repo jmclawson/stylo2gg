@@ -6,10 +6,10 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     top.loadings,
                     select.loadings, pc.x, pc.y, 
                     exception,
-                    loadings_spacer, 
-                    loadings_line_color, 
-                    loadings_word_color,
-                    loadings_upper,
+                    loadings.spacer, 
+                    loadings.line.color, 
+                    loadings.word.color,
+                    loadings.upper,
                     plaintext){
   s2g_export$z <<- df_z
   # don't overwrite the classes that are defined already in the_class - 2022-02-08
@@ -112,10 +112,10 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                                pc.y,
                                invert.x,
                                invert.y,
-                               loadings_spacer, 
-                               loadings_line_color, 
-                               loadings_word_color,
-                               loadings_upper)
+                               loadings.spacer, 
+                               loadings.line.color, 
+                               loadings.word.color,
+                               loadings.upper)
     }
   } else if (top.loadings > 0) {
     the_plot <- s2g_loadings(the_plot,
@@ -126,10 +126,10 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                              pc.y,
                              invert.x,
                              invert.y,
-                             loadings_spacer, 
-                             loadings_line_color, 
-                             loadings_word_color,
-                             loadings_upper)
+                             loadings.spacer, 
+                             loadings.line.color, 
+                             loadings.word.color,
+                             loadings.upper)
   } else {
     message("no go")
     the_plot <- the_plot +

@@ -105,10 +105,10 @@
 #' @param legend Show or hide the legend with \code{TRUE} or \code{FALSE}.
 #' @param show.zero Toggle (TRUE / FALSE) for leaving space below the lowest distance to indicate zero
 #' @param count.labels Toggle (TRUE / FALSE) to show or hide counting numbers at the beginning of labels on a dendrogram. Useful for manually setting a \strong{\code{highlight.box}} when constructing a plot, but probably not ideal for the final version of a dendrogram. Defaults to FALSE
-#' @param loadings_spacer The spacer used to replace spaces in loading words, used for multiple-word n-grams. Define it as a quoted string. Defaults to \code{"_"}.
-#' @param loadings_line_color A string defining the lines leading to loading words. Defaults to \code{lightgray}.
-#' @param loadings_word_color A string defining the color used to display loading words. Defaults to \code{darkgray}.
-#' @param loadings_upper Toggle (TRUE / FALSE) to convert loadings into uppercase or to leave them alone. The default is FALSE, keeping them unconverted.
+#' @param loadings.spacer The spacer used to replace spaces in loading words, used for multiple-word n-grams. Define it as a quoted string. Defaults to \code{"_"}.
+#' @param loadings.line.color A string defining the lines leading to loading words. Defaults to \code{lightgray}.
+#' @param loadings.word.color A string defining the color used to display loading words. Defaults to \code{darkgray}.
+#' @param loadings.upper Toggle (TRUE / FALSE) to convert loadings into uppercase or to leave them alone. The default is FALSE, keeping them unconverted.
 #' @param plaintext Toggle (TRUE / FALSE) to show text labels as \code{geom_text()} layers (the default) or as \code{geom_label()} layers (when switched to \code{FALSE}.
 #' @param exception Still under development, this argument allows you to pull out one class (or multiple classes) of texts to build a PCA space without it and then to project that text onto the space. This may be useful for adding texts to previous analysis to build layers for understanding perceived differences in new contexts. Probably stay away from using it for now.
 #'
@@ -142,10 +142,10 @@ stylo2gg <- function(df, viz, features,
                      highlight.nudge, highlight.single,
                      show.zero, highlight.box = NULL,
                      exception,
-                     loadings_spacer = "_", 
-                     loadings_line_color = "lightgray", 
-                     loadings_word_color = "darkgray",
-                     loadings_upper = FALSE,
+                     loadings.spacer = "_", 
+                     loadings.line.color = "lightgray", 
+                     loadings.word.color = "darkgray",
+                     loadings.upper = FALSE,
                      plaintext = TRUE) {
   library(dendextend)
   library(ggplot2)
@@ -417,10 +417,10 @@ stylo2gg <- function(df, viz, features,
                         select.loadings, 
                         pc.x, pc.y, 
                         exception,
-                        loadings_spacer, 
-                        loadings_line_color, 
-                        loadings_word_color,
-                        loadings_upper,
+                        loadings.spacer, 
+                        loadings.line.color, 
+                        loadings.word.color,
+                        loadings.upper,
                         plaintext)
   } else if (viz == "hc" || viz == "ca" || viz == "CA" || viz == "HC") {
     if (missing(highlight.single) && !is.null(highlight)) {
