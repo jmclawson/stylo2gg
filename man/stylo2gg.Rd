@@ -11,6 +11,8 @@ stylo2gg(
   num.features,
   top.loadings,
   select.loadings,
+  pc.x = 1,
+  pc.y = 2,
   title = NULL,
   caption = FALSE,
   count.labels = FALSE,
@@ -81,6 +83,12 @@ a feature is the fourth option: 4. using a call with the
 \code{call("word", "undershirt")}. Multiple types of items can
 be combined in one list:
 \code{select.loadings = list(c(1,2), 4, "hamilton", call("word", "undershirt"))}.}
+
+\item{pc.x}{Identifies the principal component to be placed 
+on the X-axis. Defaults to \code{1}.}
+
+\item{pc.y}{Identifies the principal component to be placed 
+on the Y-axis. Defaults to \code{2}.}
 
 \item{title}{The title that will go on the top of a chart.
 This value is inherited from \code{stylo} where possible. To

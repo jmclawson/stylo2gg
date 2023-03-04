@@ -36,6 +36,10 @@
 #' \code{call("word", "undershirt")}. Multiple types of items can
 #' be combined in one list:
 #' \code{select.loadings = list(c(1,2), 4, "hamilton", call("word", "undershirt"))}.
+#' @param pc.x Identifies the principal component to be placed 
+#' on the X-axis. Defaults to \code{1}.
+#' @param pc.y Identifies the principal component to be placed 
+#' on the Y-axis. Defaults to \code{2}.
 #' @param labeling Defines how to label items: if setting a
 #' character vector, define one string for each item in
 #' \strong{df}; if setting a numeric vector (e.g, \code{1} or

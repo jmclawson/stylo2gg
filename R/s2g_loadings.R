@@ -9,7 +9,9 @@ s2g_loadings <- function(the_plot,
                          loadings.word.color,
                          loadings.upper) {
   
-  df_pca <- as.data.frame(pca_list$x)
+  df_pca <- as.data.frame(pca_list$x) |> 
+    rename("pc_x" = pc.x,
+           "pc_y" = pc.y)
   df_pca_rotation <- as.data.frame(pca_list$rotation)
   
   if (!missing(select.loadings)) {
@@ -81,7 +83,11 @@ s2g_loadings <- function(the_plot,
   
   s2g_export$pca <<- df_pca
   
-  df_rotation <- as.data.frame(df_pca_rotation)
+  df_rotation <- as.data.frame(df_pca_rotation) |> 
+    rename("pc_x" = pc.x,
+           "pc_y" = pc.y)
+  
+  s2g_export$df_rotation <<- df_rotation
   
   if (missing(select.loadings)) {
     df_rotation_abs <-
@@ -126,12 +132,12 @@ s2g_loadings <- function(the_plot,
                   c(pc.x, pc.y)]
   }
   
-  max_pc_x <- max(df_rotation[[pc.x]])
-  min_pc_x <- min(df_rotation[[pc.x]])
-  max_pc_y <- max(df_rotation[[pc.y]])
-  min_pc_y <- min(df_rotation[[pc.y]])
+  max_pc_x <- max(df_rotation$pc_x)
+  min_pc_x <- min(df_rotation$pc_x)
+  max_pc_y <- max(df_rotation$pc_y)
+  min_pc_y <- min(df_rotation$pc_y)
   
-  loadings_df_scaled <- loadings_df[,c(pc.x, pc.y)]
+  loadings_df_scaled <- loadings_df[,c("pc_x", "pc_y")]
   loadings_df_scaled[,1] <- loadings_df_scaled[,1] *
     (max_x - min_x)/(max_pc_x - min_pc_x)
   loadings_df_scaled[,2] <- loadings_df_scaled[,2] *
