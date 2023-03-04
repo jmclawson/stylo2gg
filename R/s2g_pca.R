@@ -53,7 +53,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   pca_list <- df_pca
   df_pca_rotation <- df_pca$rotation
   
-  pc_variance <- summary(df_pca)$importance[2,1:2]
+  pc_variance <- summary(df_pca)$importance[2,c(pc.x, pc.y)]
   
   df_pca <- df_pca$x %>%
     as.data.frame() %>%
