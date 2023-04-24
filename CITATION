@@ -1,0 +1,26 @@
+citHeader("Thank you for citing stylo2gg if it is useful. To do so, please use:")
+
+citEntry(
+  entry = "Software",
+  author = as.person("James M. Clawson"),
+  title = "stylo2gg: Visualize and explore stylo data with ggplot2",
+  year = 2023,
+  month = "feb",
+  url = "https://github.com/jmclawson/stylo2gg",
+  version = "0.9",
+
+  textVersion = paste("Clawson, James M. (2023). stylo2gg: Visualize and explore stylo data with ggplot2. https://github.com/jmclawson/stylo2gg"))
+
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Manual",
+         title = "{stylo2gg}: Visualize and explore stylo data with ggplot2",
+         author = c(person("James M.", "Clawson")),
+         year = year,
+         note = note,
+         url = "https://github.com/jmclawson/stylo2gg")
+
+ textVersion = paste0("James M. Clawson, (", year, ").",
+  " stylo2gg: Visualize and explore stylo data with ggplot2. ",
+  note, ". https://github.com/jmclawson/stylo2gg.")
