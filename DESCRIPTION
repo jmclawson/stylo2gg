@@ -12,6 +12,7 @@ Description: Import data from stylo() and visualize it with different
     of the data, to show selected principal components and selected 
     loadings, and to provide visualizations well suited for printing 
     without color.
+Url: https://github.com/jmclawson/stylo2gg
 Enhances:
     stylo
 Imports:
