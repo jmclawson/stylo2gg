@@ -5,7 +5,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     scaling, invert.x, invert.y,
                     top.loadings,
                     select.loadings, pc.x, pc.y, 
-                    exception,
+                    withholding,
                     loadings.spacer, 
                     loadings.line.color, 
                     loadings.word.color,
@@ -18,32 +18,31 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   #   sapply(`[`,1)
   the_classes <- the_class
   
-  # Here, begin to add the machinery for "exception"
-  # I still need to test it a lot!
-  # It occasionally seems to malfunction
+  # Here is the machinery for "withholding"
+  # Previously called "exception"
   
-  if (!missing(exception)) {
-    the_exception <- the_classes %in% exception
-    # the_class <- the_class[!the_exception]
+  if (!missing(withholding)) {
+    the_withholding <- the_classes %in% withholding
+    # the_class <- the_class[!the_withholding]
   } else {
-    the_exception <- rep(FALSE, length(the_classes))
+    the_withholding <- rep(FALSE, length(the_classes))
   }
   
-  # the_exception <- rep(FALSE, length(the_classes))
+  # the_withholding <- rep(FALSE, length(the_classes))
   
-  df_pca <- prcomp(df_z[!the_exception,], scale. = scaling)
+  df_pca <- prcomp(df_z[!the_withholding,], scale. = scaling)
   
-  if (!missing(exception)) {
-    df_exception <-
-      df_z[the_exception,] %>%
+  if (!missing(withholding)) {
+    df_withholding <-
+      df_z[the_withholding,] %>%
       as.matrix() %>%
       scale(df_pca$center, df_pca$scale)
     
-    df_exception <- df_exception %*% df_pca$rotation
+    df_withholding <- df_withholding %*% df_pca$rotation
     
-    s2g_export$exception <<- df_exception
+    s2g_export$withholding <<- df_withholding
     
-    df_pca$x <- rbind(df_pca$x, df_exception)
+    df_pca$x <- rbind(df_pca$x, df_withholding)
     
     df_pca$x <- df_pca$x[rownames(df_z),]
   }
@@ -161,10 +160,6 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
   } else {
     labeling.numeric <- FALSE
   }
-  
-  # if (!missing(exception)) {
-  #   labeling <- labeling[!the_exception]
-  # }
   
   if (missing(labeling)) {
     if (missing(legend)) {
@@ -298,7 +293,7 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                     round(pc_variance[2]*100,1),
                     "%)")
   
-  if (!missing(exception)) {
+  if (!missing(withholding)) {
     # trying to rework for pc.x and pc.y
     y_label <- paste0("PC", pc.y, " (",
                       round(pc_variance[2]*100,1),
@@ -318,12 +313,12 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                       "\n",
                       the_caption)
     
-    if (!missing(exception)) {
+    if (!missing(withholding)) {
       # trying to rework for pc.x and pc.y
       x_label <- paste0("PC", pc.x, " (",
                         round(pc_variance[1]*100,1),
                         "% except ",
-                        paste(exception, collapse = ", "),
+                        paste(withholding, collapse = ", "),
                         ")",
                         "\n",
                         the_caption)
@@ -339,12 +334,12 @@ s2g_pca <- function(df_z, df_a, the_class, labeling,
                       round(pc_variance[1]*100,1),
                       "%)")
     
-    if (!missing(exception)) {
+    if (!missing(withholding)) {
       # trying to rework for pc.x and pc.y
       x_label <- paste0("PC", pc.x, " (",
                         round(pc_variance[1]*100,1),
                         "% except ",
-                        paste(exception, collapse = ", "),
+                        paste(withholding, collapse = ", "),
                         ")")
     }
     

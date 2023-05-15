@@ -114,7 +114,7 @@
 #' @param loadings.word.color A string defining the color used to display loading words. Defaults to \code{darkgray}.
 #' @param loadings.upper Toggle (TRUE / FALSE) to convert loadings into uppercase or to leave them alone. The default is FALSE, keeping them unconverted.
 #' @param plaintext Toggle (TRUE / FALSE) to show text labels as \code{geom_text()} layers (the default) or as \code{geom_label()} layers (when switched to \code{FALSE}.
-#' @param exception Still under development, this argument allows you to pull out one class (or multiple classes) of texts to build a PCA space without it and then to project that text onto the space. This may be useful for adding texts to previous analysis to build layers for understanding perceived differences in new contexts. Probably stay away from using it for now.
+#' @param withholding Specify a class or classes of texts to withhold from underlying principal components analysis before these texts are then projected into that space.
 #'
 #' @details
 #' Because \code{stylo2gg} builds on \code{ggplot2}, almost all
@@ -145,7 +145,7 @@ stylo2gg <- function(df, viz, features,
                      horiz = TRUE, axis.labels = FALSE,
                      highlight.nudge, highlight.single,
                      show.zero, highlight.box = NULL,
-                     exception,
+                     withholding,
                      loadings.spacer = "_", 
                      loadings.line.color = "lightgray", 
                      loadings.word.color = "darkgray",
@@ -420,7 +420,7 @@ stylo2gg <- function(df, viz, features,
                         top.loadings,
                         select.loadings, 
                         pc.x, pc.y, 
-                        exception,
+                        withholding,
                         loadings.spacer, 
                         loadings.line.color, 
                         loadings.word.color,

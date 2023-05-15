@@ -33,7 +33,7 @@ stylo2gg(
   highlight.single,
   show.zero,
   highlight.box = NULL,
-  exception,
+  withholding,
   loadings.spacer = "_",
   loadings.line.color = "lightgray",
   loadings.word.color = "darkgray",
@@ -179,7 +179,7 @@ edge of a label.}
 \item{highlight.box}{On a dendrogram, highlight items indicated by their item numbers (from the bottom on a horizontal dendrogram, from the left on a vertical dendrogram); it might be helpful to toggle the \strong{\code{count.labels}} parameter to
 \code{TRUE} to avoid having to count large data sets.}
 
-\item{exception}{Still under development, this argument allows you to pull out one class (or multiple classes) of texts to build a PCA space without it and then to project that text onto the space. This may be useful for adding texts to previous analysis to build layers for understanding perceived differences in new contexts. Probably stay away from using it for now.}
+\item{withholding}{Specify a class or classes of texts to withhold from underlying principal components analysis before these texts are then projected into that space.}
 
 \item{loadings.spacer}{The spacer used to replace spaces in loading words, used for multiple-word n-grams. Define it as a quoted string. Defaults to \code{"_"}.}
 

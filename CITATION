@@ -5,9 +5,9 @@ citEntry(
   author = as.person("James M. Clawson"),
   title = "stylo2gg: Visualize and explore stylo data with ggplot2",
   year = 2023,
-  month = "feb",
+  month = "may",
   url = "https://github.com/jmclawson/stylo2gg",
-  version = "0.9",
+  version = "1.0",
 
   textVersion = paste("Clawson, James M. (2023). stylo2gg: Visualize and explore stylo data with ggplot2. https://github.com/jmclawson/stylo2gg"))
 
