@@ -35,7 +35,9 @@ stylo_log <- function(
     add_dir_date = FALSE){
   this_object <- eval(stylo_object)
   
-  slog <- manage_stylo_log_meta(log_label, add_dir_date, add_dir_date = FALSE)
+  slog <- manage_stylo_log_meta(log_label, 
+                                log_date = Sys.Date(),
+                                add_dir_date)
   
   if(!dir.exists(slog$dir)) {
     dir.create(slog$dir)
