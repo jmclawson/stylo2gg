@@ -22,7 +22,8 @@ Imports:
     ggalt,
     ggplot2,
     ggrepel,
-    lemon
+    lemon,
+    tibble
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

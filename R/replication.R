@@ -72,7 +72,7 @@ process_log <- function(log_path){
 log_files <- function(log_dir) {
   file_data <- file.info(list.files()) |> 
     as.data.frame() |> 
-    rownames_to_column(var = "file")
+    tibble::rownames_to_column(var = "file")
   
   # find the modification time of stylo_config.txt
   target_time <- file_data |> 
