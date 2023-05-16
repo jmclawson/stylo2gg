@@ -84,7 +84,9 @@ log_files <- function(log_dir) {
     mutate(difference = difftime(mtime, target_time)) |> 
     # limit to things in the past 5 seconds
     filter(abs(difference) < 5,
-           !isdir)
+           !isdir) |> 
+    # include only txt and csv files
+    filter(grepl("[.]txt$|[.]csv$", file))
   
   new_filenames <- 
     target_time |> 
