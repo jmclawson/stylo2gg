@@ -200,11 +200,13 @@ commands available to that package should work here as well,
 using the plus-sign syntax documented by that package.
 }
 \examples{
-my_data <- stylo::stylo()
+\dontrun{
+my_data <- stylo()
 my_data \%>\% stylo2gg()
 
 # Move the legend
 my_data \%>\% stylo2gg() +
   theme(legend.position = "bottom")
+}
 
 }

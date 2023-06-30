@@ -24,10 +24,12 @@ Log a reproducible stylometric analysis from \code{stylo}.
 working directory to cache parameters.
 }
 \examples{
-my_data <- stylo::stylo()
+\dontrun{
+my_data <- stylo()
 my_data \%>\% stylo_log()
 
 # Pipe directly
 stylo() |> stylo_log()
+}
 
 }

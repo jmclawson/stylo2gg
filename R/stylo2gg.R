@@ -122,14 +122,21 @@
 #' using the plus-sign syntax documented by that package.
 #'
 #' @examples
-#' my_data <- stylo::stylo()
+#' \dontrun{
+#' my_data <- stylo()
 #' my_data %>% stylo2gg()
 #'
 #' # Move the legend
 #' my_data %>% stylo2gg() +
 #'   theme(legend.position = "bottom")
+#'}
 #'
 #' @import dendextend ggplot2 dplyr ggrepel lemon
+#' @importFrom grDevices hcl
+#' @importFrom graphics strwidth
+#' @importFrom stats as.dendrogram as.dist dist hclust order.dendrogram prcomp sd
+#' @importFrom stylo stylo stylo.default.settings dist.argamon dist.cosine dist.delta dist.eder dist.simple
+#' @importFrom utils installed.packages
 #' @export stylo2gg
 
 stylo2gg <- function(df, viz, features,
@@ -151,11 +158,6 @@ stylo2gg <- function(df, viz, features,
                      loadings.word.color = "darkgray",
                      loadings.upper = FALSE,
                      plaintext = TRUE) {
-  library(dendextend)
-  library(ggplot2)
-  library(dplyr)
-  library(ggrepel)
-  if ("lemon" %in% rownames(installed.packages())) library(lemon)
   s2g_export <<- list()
   df_a <- df
   if (missing(num.features)) {

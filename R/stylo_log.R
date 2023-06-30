@@ -12,11 +12,13 @@
 #' working directory to cache parameters. 
 #'
 #' @examples
-#' my_data <- stylo::stylo()
+#' \dontrun{
+#' my_data <- stylo()
 #' my_data %>% stylo_log()
 #'
 #' # Pipe directly
 #' stylo() |> stylo_log()
+#' }
 #'
 #' @import dplyr
 #' @export stylo_log

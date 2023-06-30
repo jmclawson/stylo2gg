@@ -1,8 +1,8 @@
 Package: stylo2gg
 Type: Package
 Title: Visualize Stylometric Data with ggplot2
-Version: 1.0
-Date: 2023
+Version: 1.0.1
+Date: 2023-06-30
 Author: James M. Clawson
 Maintainer: James M. Clawson <clawson@gmail.com>
 Description: Import data from stylo() and visualize it with different
@@ -14,8 +14,6 @@ Description: Import data from stylo() and visualize it with different
     without color. In addition to the above, Stylo2gg also provides 
     functions for reproducible research.
 Url: https://github.com/jmclawson/stylo2gg
-Enhances:
-    stylo
 Imports:
     dendextend,
     dplyr,
@@ -23,8 +21,16 @@ Imports:
     ggplot2,
     ggrepel,
     lemon,
+    stringr,
+    stylo (>= 0.7.5),
     tibble
+Remotes:
+    computationalstylistics/stylo
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
