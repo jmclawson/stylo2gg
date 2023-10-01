@@ -1,5 +1,5 @@
 ---
-title: "hierarchical-clustering"
+title: "Hierarchical Clustering"
 ---
 
 ```{r, include = FALSE}
