@@ -14,20 +14,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-[stylo2gg](https://github.com/jmclawson/stylo2gg) is written to translate [stylo](https://github.com/computationalstylistics/stylo) data into [ggplot2](https://ggplot2.tidyverse.org) visualizations.
-
-## Installation
-Using the remotes package, stylo2gg can be installed from GitHub with the following command:
-
-```{r eval=FALSE}
-remotes::install_github("jmclawson/stylo2gg")
-```
-
 ## Working from stylo
+
+Once installed, stylo2gg will interface with data recorded by the stylo package. The examples below introduce functionality using the eighty-five *Federalist Papers*, originally published pseudonymously in 1788. 
 
 ### Principal component analysis
 
-The stylo2gg package is designed to work on data recorded by the stylo package. The following code shows stylo at work, measuring word frequencies among the eighty-five *Federalist Papers*, originally published pseudonymously in 1788. As called here, the stylo package limits words to those common to at least 75% of the texts (using the `culling...` argumements), saves the data in an object called `federalist_mfw`, and plots the texts based on their word usage with principal component analysis:
+As called here, the stylo package limits words to those common to at least 75% of the texts (using the `culling...` argumements), saves the data in an object called `federalist_mfw`, and plots the texts based on their word usage with principal component analysis:
 
 ```{r eval=FALSE, include=FALSE}
 # Only run this code chunk interactively, to create the needed files
