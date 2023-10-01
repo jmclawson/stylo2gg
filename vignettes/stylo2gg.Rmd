@@ -54,7 +54,7 @@ saveRDS(federalist_mfw, "federalist_mfw.rds")
 ```
 
 
-```{r eval=FALSE, echo=TRUE}
+```{r eval=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
 #| label: introstylo1
 #| cache: false
 
@@ -75,7 +75,7 @@ federalist_mfw <-
         mfw.max = 900)
 ```
 
-```{r fig-introstylo2, echo=FALSE, fig.cap="This visualization places each part by its frequencies of 120 of the most frequent words—chosen from among words appearing in at least three-fourths of all papers The chart shows that the texts whose authorship had once been in question, shown here with red Xs, have frequency distributions most similar to those by James Madison, shown here with green crosses."}
+```{r fig-introstylo2, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="This visualization places each part by its frequencies of 120 of the most frequent words—chosen from among words appearing in at least three-fourths of all papers The chart shows that the texts whose authorship had once been in question, shown here with red Xs, have frequency distributions most similar to those by James Madison, shown here with green crosses."}
 # Actually run this code chunk, but don't show the code
 federalist_mfw <- readRDS("federalist_mfw.rds")
 readRDS("vignettes_PCA_120_MFWs_Culled_75__PCA_.rds")
