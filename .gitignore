@@ -5,3 +5,7 @@
 inst/doc
 docs
 .DS_Store
+stylo_config.txt
+table_with_frequencies.txt
+wordlist.txt
+*EDGES.csv
