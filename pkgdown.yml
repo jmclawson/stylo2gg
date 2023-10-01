@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   stylo2gg: stylo2gg.html
-last_built: 2023-10-01T16:56Z
+last_built: 2023-10-01T16:59Z
 urls:
   reference: https://jmclawson.github.io/stylo2gg/reference
   article: https://jmclawson.github.io/stylo2gg/articles
