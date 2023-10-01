@@ -13,7 +13,8 @@ Description: Import data from stylo() and visualize it with different
     loadings, and to provide visualizations well suited for printing 
     without color. In addition to the above, Stylo2gg also provides 
     functions for reproducible research.
-URL: https://github.com/jmclawson/stylo2gg, https://jmclawson.github.io/stylo2gg/
+URL: https://github.com/jmclawson/stylo2gg, 
+    https://jmclawson.github.io/stylo2gg/
 Imports:
     dendextend,
     dplyr,
