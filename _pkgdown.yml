@@ -1,4 +1,6 @@
 url: https://jmclawson.github.io/stylo2gg/
 template:
   bootstrap: 5
+  bslib:
+    primary: "#f39c12"
 
