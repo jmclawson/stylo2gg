@@ -34,3 +34,4 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://jmclawson.github.io/stylo2gg/
