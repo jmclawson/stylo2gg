@@ -87,7 +87,7 @@ federalist_mfw |>
            labeling = 2)
 ```
 
-Displaying these labels makes it possible further to study Mosteller and Wallace's findings on the papers jointly authored by Madison and Hamilton: in this principal components analysis of 120 most frequent words, papers 18, 19, and 20 seem closer in style to Madison than to Hamilton, and Mosteller and Wallace's work using different techniques seems to show the same finding for two of these three papers, with mixed results for number 20.
+Displaying these labels makes it possible further to study Mosteller and Wallace's findings on the papers jointly authored by Madison and Hamilton: in this principal component analysis of 120 most frequent words, papers 18, 19, and 20 seem closer in style to Madison than to Hamilton, and Mosteller and Wallace's work using different techniques seems to show the same finding for two of these three papers, with mixed results for number 20.
 
 If it were preferred instead to label the author names, we could set `labeling=1`. If we wanted to show everything, replicating stylo's option `pca.visual.flavour="labels"`, we can set `labeling=0`:
 
@@ -101,7 +101,7 @@ federalist_mfw |>
 
 In addition to recreating some of the visualizations offered by stylo, stylo2gg takes advantage of ggplot2's extensibility to offer additional options. If, for instance, we want to emphasize the overlap of style among the disputed papers and those by Madison, it's easy to show a highlight of the 3rd and 4th categories of texts, corresponding to their ordering on the legend:
 
-```{r, message=FALSE, fig.cap="The `highlight` option accepts numbers corresponding to categories shown on the legend. Highlights on principal components charts can include 1 or more categories, but highlights for hierarchical clusters can only accept one category. To draw these loops around points on a scatterplot, stylogg relies on the <a href='https://cran.r-project.org/web/packages/ggalt/index.html'>ggalt</a> package."}
+```{r, message=FALSE, fig.cap="The `highlight` option accepts numbers corresponding to categories shown on the legend. Highlights on principal component charts can include 1 or more categories, but highlights for hierarchical clusters can only accept one category. To draw these loops around points on a scatterplot, stylogg relies on the <a href='https://cran.r-project.org/web/packages/ggalt/index.html'>ggalt</a> package."}
 federalist_mfw |> 
   stylo2gg(shapes = FALSE, 
            labeling = 2,
@@ -110,7 +110,7 @@ federalist_mfw |>
 
 ### Overlay loadings
 
-With these texts charted, we might want to communicate something about the underlying word frequencies that inform their placement. The `top.loadings` option allows us to show a number of words---ordered from the most frequent to the least frequent---overlaid with scaled vectors as alternative axes on the principal components chart:
+With these texts charted, we might want to communicate something about the underlying word frequencies that inform their placement. The `top.loadings` option allows us to show a number of words---ordered from the most frequent to the least frequent---overlaid with scaled vectors as alternative axes on the principal component chart:
 
 ```{r, fig.cap="Set `top.loadings` to a number `n` to overlay loadings for the most frequent words, from 1 to `n`. This chart shows loadings and scaled vectors for the 10 most frequent words."}
 federalist_mfw |> 
@@ -196,7 +196,7 @@ federalist_mfw |>
 
 ### Withholding texts from a PCA projection
 
-In cases of disputed authorship, it can be desirable to understand relationships among known texts and authors before considering those of unknown provenance. New in version 1.0, stylo2gg's `withholding` parameter allows for certain classes to be left out from defining the base projection of a principal components analysis. These texts are then projected into a space they did not help define:
+In cases of disputed authorship, it can be desirable to understand relationships among known texts and authors before considering those of unknown provenance. New in version 1.0, stylo2gg's `withholding` parameter allows for certain classes to be left out from defining the base projection of a principal component analysis. These texts are then projected into a space they did not help define:
 
 ```{r, fig.cap="Defining `withholding` makes it possible to ignore certain classes of texts from the underlying projection."}
 federalist_mfw |> 
@@ -207,7 +207,7 @@ federalist_mfw |>
 
 ### Choosing principal components
 
-Follosing stylo's lead, stylo2gg shows the first two principal components by default, but it may often be necessary to show more. Introduced earlier in 2023, the `pc.x` and `pc.y` parameters make it possible to map other components to the X-axis and Y-axis, simultaneously updating axis labels to indicate components and variance.[^6]
+Following stylo's lead, stylo2gg shows the first two principal components by default, but it may often be necessary to show more. Introduced earlier in 2023, the `pc.x` and `pc.y` parameters make it possible to map other components to the X-axis and Y-axis, simultaneously updating axis labels to indicate components and variance.[^6]
 
 [^6]: This feature was requested by Josef Ginnerskov via Stylo2gg's issue tracker on GitHub: [github.com/jmclawson/stylo2gg/issues/4](https://github.com/jmclawson/stylo2gg/issues/4)
 
@@ -216,11 +216,11 @@ federalist_mfw |>
   stylo2gg(pc.x = 3, pc.y = 4)
 ```
 
-### Other options for principal components analysis
+### Other options for principal component analysis
 
-In addition to the options shown above, principal components analysis can be directed with a covariance matrix (`viz="PCV"`) or correlation matrix (`viz="PCV"`), and a given chart can be flipped horizontally (with `invert.x=TRUE`) or vertically (`invert.y=TRUE`). Additionally, the caption below the chart can be removed using `caption=FALSE`. Alternatively, setting `viz="pca"` will choose a minimal set of changes from which one might choose to build up selected additions: turning on captions (`caption=TRUE`), moving the legend or calling on other Ggplot2 commands, adding a title (using `title="Title Goes Here"`), or other matters.
+In addition to the options shown above, principal component analysis can be directed with a covariance matrix (`viz="PCV"`) or correlation matrix (`viz="PCV"`), and a given chart can be flipped horizontally (with `invert.x=TRUE`) or vertically (`invert.y=TRUE`). Additionally, the caption below the chart can be removed using `caption=FALSE`. Alternatively, setting `viz="pca"` will choose a minimal set of changes from which one might choose to build up selected additions: turning on captions (`caption=TRUE`), moving the legend or calling on other Ggplot2 commands, adding a title (using `title="Title Goes Here"`), or other matters.
 
-```{r, message=FALSE, fig.cap="Setting `viz='pca'` rather than the stylo-flavored `viz='PCR'` or `viz='PCV'` prepares a minimal visualization of a principal components analysis derived from a correlation matrix. This might be a good setting to use if further customizing the figure by adding refinements provided by ggplot2 functions---at which point it will become necessary to load that package explicitly. The example here also shows the utility of the stylo2gg function for adjusting labels, `rename_category()`."}
+```{r, message=FALSE, fig.cap="Setting `viz='pca'` rather than the stylo-flavored `viz='PCR'` or `viz='PCV'` prepares a minimal visualization of a principal component analysis derived from a correlation matrix. This might be a good setting to use if further customizing the figure by adding refinements provided by ggplot2 functions---at which point it will become necessary to load that package explicitly. The example here also shows the utility of the stylo2gg function for adjusting labels, `rename_category()`."}
 library(ggplot2)
 
 federalist_mfw |> 
