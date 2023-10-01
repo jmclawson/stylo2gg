@@ -2,25 +2,27 @@
 Visualize and explore stylo data using ggplot2.
 
 ## Installation
-Using the remotes or devtools packages, install stylo2gg with the following command:
+Using the remotes package, install stylo2gg with the following command:
 
 ```{r}
-install_github("jmclawson/stylo2gg")
+remotes::install_github("jmclawson/stylo2gg")
 ```
 
 ## Use
 Pipe the output from `stylo()` into `stylo2gg()`, or save it as an object reused by the `stylo2gg()` function:
 
 ```{r}
-# pipe it directly using dplyr
-stylo() %>% stylo2gg
+# pipe it directly
+stylo() |> stylo2gg
 
 # or save it as an object to use and re-use later
 my_data <- stylo()
 stylo2gg(my_data)
-
 ```
 
+For more explanation on use, see the [introductory blog post](https://jmclawson.net/blog/posts/introducing-stylo2gg/), the function [reference pages](https://jmclawson.github.io/stylo2gg/reference/index.html) or the [package website](https://jmclawson.github.io/stylo2gg).
+
+<!--
 ## Options
 
 ### Principal Components Analysis
@@ -35,5 +37,4 @@ Set `labeling=` to a number corresponding to an index of metadata encoded in tex
 Use `shapes=FALSE` and `shapes=TRUE` to toggle symbols on and off of a visualization.
 
 Set `highlight=` to a number or numbers corresponding to the legend index of a certain category of work. For example, `highlight=1` will draw a circle around or a box around texts attributed to the first author in the legend.
-
-More options and examples are shown here: [jmclawson.net/blog/posts/introducing-stylo2gg/](https://jmclawson.net/blog/posts/introducing-stylo2gg/)
+-->
