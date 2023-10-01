@@ -74,41 +74,36 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Using the remotes or devtools packages, install stylo2gg with the following command:</p>
-<pre class="{r}"><code><span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jmclawson/stylo2gg"</span><span class="op">)</span></span></code></pre>
+<p>Using the remotes package, install stylo2gg with the following command:</p>
+<pre class="{r}"><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jmclawson/stylo2gg"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="use">Use<a class="anchor" aria-label="anchor" href="#use"></a>
 </h2>
 <p>Pipe the output from <code>stylo()</code> into <code><a href="reference/stylo2gg.html">stylo2gg()</a></code>, or save it as an object reused by the <code><a href="reference/stylo2gg.html">stylo2gg()</a></code> function:</p>
-<pre class="{r}"><code><span><span class="co"># pipe it directly using dplyr</span></span>
-<span><span class="fu">stylo</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">stylo2gg</span></span>
-<span></span>
-<span><span class="co"># or save it as an object to use and re-use later</span></span>
-<span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu">stylo</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/stylo2gg.html">stylo2gg</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span></span></code></pre>
-</div>
-<div class="section level2">
-<h2 id="options">Options<a class="anchor" aria-label="anchor" href="#options"></a>
-</h2>
-<div class="section level3">
-<h3 id="principal-components-analysis">Principal Components Analysis<a class="anchor" aria-label="anchor" href="#principal-components-analysis"></a>
-</h3>
-<p>Set <code>viz="pca"</code> for a minimal display of word frequencies using principal components analysis, or use <code>viz="PCR"</code> or <code>viz="PCV"</code> for stylo-themed visualizations using ggplot2.</p>
-</div>
-<div class="section level3">
-<h3 id="hierarchical-clustering">Hierarchical Clustering<a class="anchor" aria-label="anchor" href="#hierarchical-clustering"></a>
-</h3>
-<p>Set <code>viz="hc"</code> for a minimal display of a dendrogram with a cluster analysis of text distances, or use <code>viz="CA"</code> for a stylo-themed visualization using ggplot2.</p>
-</div>
-<div class="section level3">
-<h3 id="other-options">Other options<a class="anchor" aria-label="anchor" href="#other-options"></a>
-</h3>
-<p>Set <code>labeling=</code> to a number corresponding to an index of metadata encoded in texts’ filenames. For instance, “Joyce_Ulysses_1922.txt” using the option <code>stylo2gg(labeling=2)</code> would display as “Ulysses”, <code>stylo2gg(labeling=3)</code> would display as “1922”, and <code>stylo2gg(labeling=0)</code> would display as “Joyce_Ulysses_1922”.</p>
-<p>Use <code>shapes=FALSE</code> and <code>shapes=TRUE</code> to toggle symbols on and off of a visualization.</p>
-<p>Set <code>highlight=</code> to a number or numbers corresponding to the legend index of a certain category of work. For example, <code>highlight=1</code> will draw a circle around or a box around texts attributed to the first author in the legend.</p>
-<p>More options and examples are shown here: <a href="https://jmclawson.net/blog/posts/introducing-stylo2gg/" class="external-link">jmclawson.net/blog/posts/introducing-stylo2gg/</a></p>
-</div>
+<pre class="{r}"><code># pipe it directly
+stylo() |&gt; stylo2gg
+
+# or save it as an object to use and re-use later
+my_data &lt;- stylo()
+stylo2gg(my_data)</code></pre>
+<p>For more explanation on use, see the <a href="https://jmclawson.net/blog/posts/introducing-stylo2gg/" class="external-link">introductory blog post</a>, the function <a href="https://jmclawson.github.io/stylo2gg/reference/index.html">reference pages</a> or the <a href="https://jmclawson.github.io/stylo2gg">package website</a>.</p>
+<!--
+## Options
+
+### Principal Components Analysis
+Set `viz="pca"` for a minimal display of word frequencies using principal components analysis, or use `viz="PCR"` or `viz="PCV"` for stylo-themed visualizations using ggplot2. 
+
+### Hierarchical Clustering
+Set `viz="hc"` for a minimal display of a dendrogram with a cluster analysis of text distances, or use `viz="CA"` for a stylo-themed visualization using ggplot2. 
+
+### Other options
+Set `labeling=` to a number corresponding to an index of metadata encoded in texts' filenames. For instance, "Joyce_Ulysses_1922.txt" using the option `stylo2gg(labeling=2)` would display as "Ulysses", `stylo2gg(labeling=3)` would display as "1922", and `stylo2gg(labeling=0)` would display as "Joyce_Ulysses_1922".
+
+Use `shapes=FALSE` and `shapes=TRUE` to toggle symbols on and off of a visualization.
+
+Set `highlight=` to a number or numbers corresponding to the legend index of a certain category of work. For example, `highlight=1` will draw a circle around or a box around texts attributed to the first author in the legend.
+-->
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
