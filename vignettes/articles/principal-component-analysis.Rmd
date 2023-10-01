@@ -43,7 +43,6 @@ saveRDS(federalist_mfw, "federalist_mfw.rds")
 ```{r eval=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
 #| label: introstylo1
 #| cache: false
-
 library(stylo)
 
 federalist_mfw <- 
@@ -64,7 +63,7 @@ federalist_mfw <-
 ```{r fig-introstylo2, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="This visualization places each part by its frequencies of 120 of the most frequent words—chosen from among words appearing in at least three-fourths of all papers The chart shows that the texts whose authorship had once been in question, shown here with red Xs, have frequency distributions most similar to those by James Madison, shown here with green crosses."}
 # Actually run this code chunk, but don't show the code
 federalist_mfw <- readRDS("federalist_mfw.rds")
-readRDS("vignettes_PCA_120_MFWs_Culled_75__PCA_.rds")
+readRDS("articles_PCA_120_MFWs_Culled_75__PCA_.rds")
 ```
 
 As the figure suggests, most of these documents were eventually known to be written by Alexander Hamilton, John Jay, and James Madison, shown categorized here by their last names. Although most had known authorship, some were disputed or had joint authorship, shown here by the "NA" category. From their placement along the X- and Y-axes, the disputed papers seem closest in style to those by James Madison. The analysis here uses some of the same measures Frederick Mosteller and David Wallace famously used in their 1963 study, and it arrives at similar conclusions, but the ease and usefulness of tools like stylo means that preparing this quick visualization demands far less time and sweat.
@@ -72,8 +71,6 @@ As the figure suggests, most of these documents were eventually known to be writ
 In saving this output to a named object `federalist_mfw`, stylo makes it possible to access the frequency tables to study them in other ways. By taking advantage of this object, the stylo2gg package makes it very easy to try out different visualizations. Without any changed parameters, the `stylo2gg()` function will import defaults from the call used to run `stylo()`:
 
 ```{r, fig.cap="Using selected `ggplot2` defaults for shapes and colors, the visualization created by `stylo2gg` nevertheless shows the same patterns of style, presenting a figure drawn from the same principal components. Here, the disputed papers are marked by purple diamonds, and they seem closest in style to the parts known to be by Madison, marked by blue Xs."}
-
-library(stylo2gg)
 federalist_mfw |> 
   stylo2gg()
 ```
@@ -85,7 +82,6 @@ In the simplest conversion of a stylo object, `stylo2gg()` tries as closely as i
 From here, it's easy to change options to clarify an analysis without having to call `stylo()` again. Files prepared for stylo typically follow a specific naming convention: in the case of this corpus, Federalist No. 10 is prepared in a text file called `Madison_10.txt`, indicating metadata offset by underscores, with the author name coming first and the title or textual marker coming next. The stylo package already uses the first part of this metadata to apply color to different authors or class groupings of texts. Likewise, stylo2gg follows suit, but it can also choose among these aspects to apply a label. For this chart, it might make sense to replace symbols with the number of each paper it represents:
 
 ```{r, fig.cap="The option `shapes=FALSE` turns off the symbols that would otherwise also appear; simultaneously, the option `labeling=2` selects the second metadata element from corpus filenames---in this case the number of the specific paper---as a label for the visualization. When a chosen label consists of nothing but numbers, as it does here, the legend key changes to a number sign. If a label includes any other characters, it becomes the letter 'a', ggplot2's default key for showing color of text."}
-
 federalist_mfw |> 
   stylo2gg(shapes = FALSE, 
            labeling = 2)
@@ -96,7 +92,6 @@ Displaying these labels makes it possible further to study Mosteller and Wallace
 If it were preferred instead to label the author names, we could set `labeling=1`. If we wanted to show everything, replicating stylo's option `pca.visual.flavour="labels"`, we can set `labeling=0`:
 
 ```{r, fig.cap="The option `labeling=0` shows entire file names for items in the corpus, excepting the extension. This option also turns off the legend by default, since that information is already indicated."}
-
 federalist_mfw |> 
   stylo2gg(shapes = FALSE, 
            labeling = 0)
@@ -106,8 +101,7 @@ federalist_mfw |>
 
 In addition to recreating some of the visualizations offered by stylo, stylo2gg takes advantage of ggplot2's extensibility to offer additional options. If, for instance, we want to emphasize the overlap of style among the disputed papers and those by Madison, it's easy to show a highlight of the 3rd and 4th categories of texts, corresponding to their ordering on the legend:
 
-```{r, fig.cap="The `highlight` option accepts numbers corresponding to categories shown on the legend. Highlights on principal components charts can include 1 or more categories, but highlights for hierarchical clusters can only accept one category. To draw these loops around points on a scatterplot, stylogg relies on the <a href='https://cran.r-project.org/web/packages/ggalt/index.html'>ggalt</a> package."}
-
+```{r, message=FALSE, fig.cap="The `highlight` option accepts numbers corresponding to categories shown on the legend. Highlights on principal components charts can include 1 or more categories, but highlights for hierarchical clusters can only accept one category. To draw these loops around points on a scatterplot, stylogg relies on the <a href='https://cran.r-project.org/web/packages/ggalt/index.html'>ggalt</a> package."}
 federalist_mfw |> 
   stylo2gg(shapes = FALSE, 
            labeling = 2,
@@ -119,7 +113,6 @@ federalist_mfw |>
 With these texts charted, we might want to communicate something about the underlying word frequencies that inform their placement. The `top.loadings` option allows us to show a number of words---ordered from the most frequent to the least frequent---overlaid with scaled vectors as alternative axes on the principal components chart:
 
 ```{r, fig.cap="Set `top.loadings` to a number `n` to overlay loadings for the most frequent words, from 1 to `n`. This chart shows loadings and scaled vectors for the 10 most frequent words."}
-
 federalist_mfw |> 
   stylo2gg(shapes = FALSE, 
            labeling = 2,
@@ -129,8 +122,7 @@ federalist_mfw |>
 
 Alternatively, show loadings by nearest principal components, by the middle point of a given category, by a specific word, or all of the above:
 
-```{r, fig.cap='In a list form, the `select.loadings` option accepts coordinates, category names, and words. Here, `c(-4,-6)` indicates that the code should find the loading nearest to -4 on the first principal component and -6 on the second principal component; `"Madison"` indicates that the function should find coordinates at the middle of papers by Madison and then find the loading nearest those coordinates; and three articles "the," "a," and "an" indicate, using `call("word")`, that these specific loadings should be shown.'}
-
+```{r, fig.cap="In a list form, the `select.loadings` option accepts coordinates, category names, and words. Here, `c(-4,-6)` indicates that the code should find the loading nearest to -4 on the first principal component and -6 on the second principal component; *Madison* indicates that the function should find coordinates at the middle of papers by Madison and then find the loading nearest those coordinates; and three articles *the*, *a*, and *an* indicate, using `call('word')`, that these specific loadings should be shown."}
 federalist_mfw |> 
   stylo2gg(shapes = FALSE, 
            labeling = 2,
@@ -145,7 +137,6 @@ These words and lines are gray by default. As of fall 2022, other colors can be 
 [^4]: The option to choose the color for loadings was requested by Josef Ginnerskov via Stylo2gg's issue tracker on GitHub: [github.com/jmclawson/stylo2gg/issues/2](https://github.com/jmclawson/stylo2gg/issues/2)
 
 ```{r, fig.cap="Set `loadings.line.color` and `loadings.word.color` to change the coloring of loadings. Optionally toggle `loadings.upper` to show uppercase letters, or set `loadings.spacer` to define the character shown in lieu of spaces when measuring bigrams and other n-grams."}
-
 federalist_mfw |> 
   stylo2gg(top.loadings = 6,
            loadings.line.color = "blue",
@@ -161,8 +152,7 @@ One might, for instance, hypothesize that words shorter than four characters are
 
 [^5]: Mosteller and Wallace write of being surprised that "high-frequency function words did the best job" (304), and their findings of this tendency in English texts have been confirmed many times over since then.
 
-```{r, fig.cap='Selecting a subset of features will also cause the caption to update from "120 MFW" to "42 W," reflecting the changed number of features and the type: they are no longer most frequent words (MFW) but are now just words (W).'}
-
+```{r, fig.cap="Selecting a subset of features will also cause the caption to update from *120 MFW* to *42 W,* reflecting the changed number of features and the type: they are no longer most frequent words (MFW) but are now just words (W)."}
 short_words <- 
   federalist_mfw$features.actually.used[federalist_mfw$features.actually.used |> nchar() < 4]
 
@@ -177,6 +167,7 @@ Results here suggest that the hypothesis would have been mostly correct, as it i
 If instead of manually selecting features one preferred to choose a subset by number, the `num.features` option makes it possible to do so.
 
 ```{r, fig.cap="Setting `num.features` to 50 will limit a chart to the 50 most frequent words. The caption updates to reflect this choice."}
+library(stringr)
 
 federalist_mfw |> 
   stylo2gg(shapes = FALSE, 
@@ -208,7 +199,6 @@ federalist_mfw |>
 In cases of disputed authorship, it can be desirable to understand relationships among known texts and authors before considering those of unknown provenance. New in version 1.0, stylo2gg's `withholding` parameter allows for certain classes to be left out from defining the base projection of a principal components analysis. These texts are then projected into a space they did not help define:
 
 ```{r, fig.cap="Defining `withholding` makes it possible to ignore certain classes of texts from the underlying projection."}
-
 federalist_mfw |> 
   stylo2gg(withholding = "NA",
            highlight = 3,
@@ -228,17 +218,9 @@ federalist_mfw |>
 
 ### Other options for principal components analysis
 
-<dl>
-  <dt>`viz`</dt>
-  <dd>In addition to the options shown above, principal components analysis can be directed with a covariance matrix (`viz="PCV"`) or correlation matrix (`viz="PCV"`). Alternatively, setting `viz="pca"` will choose a minimal set of changes from which one might choose to build up selected additions.</dd>
-  <dt>`invert.x` / `invert.y`</dt>
-  <dd>Output can be flipped horizontally (with `invert.x=TRUE`) or vertically (`invert.y=TRUE`).</dd>
-  <dt>`caption`</dt>
-  <dd>Set `caption=FALSE` to omit the caption below the chart. </dd>
-</dl>
+In addition to the options shown above, principal components analysis can be directed with a covariance matrix (`viz="PCV"`) or correlation matrix (`viz="PCV"`), and a given chart can be flipped horizontally (with `invert.x=TRUE`) or vertically (`invert.y=TRUE`). Additionally, the caption below the chart can be removed using `caption=FALSE`. Alternatively, setting `viz="pca"` will choose a minimal set of changes from which one might choose to build up selected additions: turning on captions (`caption=TRUE`), moving the legend or calling on other Ggplot2 commands, adding a title (using `title="Title Goes Here"`), or other matters.
 
-```{r, message=FALSE, fig.cap='Setting `viz="pca"` rather than the stylo-flavored `viz="PCR"` or `viz="PCV"` prepares a minimal visualization of a principal components analysis derived from a correlation matrix. This might be a good setting to use if further customizing the figure by adding refinements provided by ggplot2 functions---at which point it will become necessary to load that package explicitly. The example here also shows the utility of the stylo2gg function for adjusting labels, `rename_category()`.'}
-
+```{r, message=FALSE, fig.cap="Setting `viz='pca'` rather than the stylo-flavored `viz='PCR'` or `viz='PCV'` prepares a minimal visualization of a principal components analysis derived from a correlation matrix. This might be a good setting to use if further customizing the figure by adding refinements provided by ggplot2 functions---at which point it will become necessary to load that package explicitly. The example here also shows the utility of the stylo2gg function for adjusting labels, `rename_category()`."}
 library(ggplot2)
 
 federalist_mfw |> 
