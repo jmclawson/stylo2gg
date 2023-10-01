@@ -116,11 +116,9 @@ federalist_mfw2 <- stylo(gui = FALSE,
 saveRDS(federalist_mfw2, "federalist_mfw2.rds")
 ```
 
-
 ```{r eval=FALSE, echo=TRUE}
 #| label: stylo_hc
 #| cache: false
-
 federalist_mfw2 <- 
   stylo(gui = FALSE,
       corpus.dir = system.file("extdata/federalist", package = "stylo2gg"),
@@ -136,13 +134,11 @@ federalist_mfw2 <-
       mfw.max = 900)
 ```
 
-
 ```{r fig-stylo_hc2, echo=FALSE, fig.cap="Dendrogram of hierarchical clusters, prepared by stylo."}
 #| fig.height: 10.0
 # Actually run this code chunk, but don't show the code
 federalist_mfw2 <- readRDS("federalist_mfw2.rds")
 readRDS("vignettes_CA_120_MFWs_Culled_75__Classic Delta_.rds")
-
 ```
 
 This `federalist_mfw2` object can then be piped into `stylo2gg()`:
@@ -150,7 +146,6 @@ This `federalist_mfw2` object can then be piped into `stylo2gg()`:
 ```{r}
 #| fig.height: 10.0
 #| fig-cap: "As with principal components analysis, `stylo2gg()` function defaults will recreate the chart made by `stylo()`."
-
 federalist_mfw2 |> 
   stylo2gg()
 ```
@@ -166,4 +161,4 @@ federalist_mfw |>
            shapes = FALSE)
 ```
 
-Additional settings are explained in a different vignette.
+Additional settings for visualizing clusters with dendrograms are explained in the article on [hierarchical clustering](articles/hierarchical-clustering.html).
