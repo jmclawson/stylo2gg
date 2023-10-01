@@ -25,9 +25,9 @@ remotes::install_github("jmclawson/stylo2gg")
 
 ## Working from stylo
 
-### Principal components analysis
+### Principal component analysis
 
-The stylo2gg package is designed to work on data recorded by the stylo package. The following code shows stylo at work, measuring word frequencies among the eighty-five *Federalist Papers*, originally published pseudonymously in 1788. As called here, the stylo package limits words to those common to at least 75% of the texts (using the `culling...` argumements), saves the data in an object called `federalist_mfw`, and plots the texts based on their word usage with principal components analysis:
+The stylo2gg package is designed to work on data recorded by the stylo package. The following code shows stylo at work, measuring word frequencies among the eighty-five *Federalist Papers*, originally published pseudonymously in 1788. As called here, the stylo package limits words to those common to at least 75% of the texts (using the `culling...` argumements), saves the data in an object called `federalist_mfw`, and plots the texts based on their word usage with principal component analysis:
 
 ```{r eval=FALSE, include=FALSE}
 # Only run this code chunk interactively, to create the needed files
@@ -91,12 +91,11 @@ federalist_mfw |>
   stylo2gg()
 ```
 
-Other settings are explained in a different vignette.
+Other settings are explained in the article on [principle component analysis](articles/principal-component-analysis.html).
 
 ### Hierarchical clustering
 
 In addition to two-dimensional relationships with principal components, stylo can also show a dendrogram for cluster analysis, showing texts' relationships based on their distance to each other.
-
 
 ```{r eval=FALSE, include=FALSE}
 # Only run this code chunk interactively, to create the needed files
