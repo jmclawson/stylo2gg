@@ -14,11 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Working from stylo
-
 Once installed, stylo2gg will interface with data recorded by the stylo package. The examples below introduce functionality using the eighty-five *Federalist Papers*, originally published pseudonymously in 1788. 
 
-### Principal component analysis
+## Principal component analysis
 
 As called here, the stylo package limits words to those common to at least 75% of the texts (using the `culling...` argumements), saves the data in an object called `federalist_mfw`, and plots the texts based on their word usage with principal component analysis:
 
@@ -86,7 +84,7 @@ federalist_mfw |>
 
 Other settings are explained in the article on [principle component analysis](articles/principal-component-analysis.html).
 
-### Hierarchical clustering
+## Hierarchical clustering
 
 In addition to two-dimensional relationships with principal components, stylo can also show a dendrogram for cluster analysis, showing texts' relationships based on their distance to each other.
 
