@@ -6,7 +6,7 @@ citEntry(
   title = "stylo2gg: Visualize and explore stylo data with ggplot2",
   year = 2023,
   month = "june",
-  url = "https://github.com/jmclawson/stylo2gg",
+  url = "https://jmclawson.github.io/stylo2gg/",
   version = "1.0.1",
 
   textVersion = paste("Clawson, James M. (2023). stylo2gg: Visualize and explore stylo data with ggplot2. https://github.com/jmclawson/stylo2gg"))
@@ -19,8 +19,8 @@ bibentry(bibtype = "Manual",
          author = c(person("James M.", "Clawson")),
          year = year,
          note = note,
-         url = "https://github.com/jmclawson/stylo2gg")
+         url = "https://jmclawson.github.io/stylo2gg/")
 
  textVersion = paste0("James M. Clawson, (", year, ").",
   " stylo2gg: Visualize and explore stylo data with ggplot2. ",
-  note, ". https://github.com/jmclawson/stylo2gg.")
+  note, ". https://jmclawson.github.io/stylo2gg/.")
