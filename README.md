@@ -1,4 +1,4 @@
-# stylo2gg
+# stylo2gg <a href="https://jmclawson.github.io/stylo2gg/"><img src="man/figures/logo.png" align="right" height="115" alt="stylo2gg website" /></a>
 Visualize and explore stylo data using ggplot2.
 
 ## Installation
