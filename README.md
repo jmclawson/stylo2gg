@@ -20,6 +20,7 @@ my_data <- stylo()
 stylo2gg(my_data)
 ```
 
+## Further details
 For more explanation on use, see the [introductory blog post](https://jmclawson.net/blog/posts/introducing-stylo2gg/), the function [reference pages](https://jmclawson.github.io/stylo2gg/reference/index.html) or the [package website](https://jmclawson.github.io/stylo2gg).
 
 <!--
