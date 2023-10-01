@@ -60,7 +60,14 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/jmclawson/stylo2gg/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -75,39 +82,25 @@
       <img src="../logo.png" class="logo" alt=""><h1>stylo2gg</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/jmclawson/stylo2gg/blob/HEAD/vignettes/stylo2gg.Rmd" class="external-link"><code>vignettes/stylo2gg.Rmd</code></a></small>
       <div class="d-none name"><code>stylo2gg.Rmd</code></div>
     </div>
 
     
     
-<p><a href="https://github.com/jmclawson/stylo2gg" class="external-link">stylo2gg</a> is
-written to translate <a href="https://github.com/computationalstylistics/stylo" class="external-link">stylo</a> data
-into <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>
-visualizations.</p>
+<p>Once installed, stylo2gg will interface with data recorded by the
+stylo package. The examples below introduce functionality using the
+eighty-five <em>Federalist Papers</em>, originally published
+pseudonymously in 1788.</p>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="principal-component-analysis">Principal component analysis<a class="anchor" aria-label="anchor" href="#principal-component-analysis"></a>
 </h2>
-<p>Using the remotes package, stylo2gg can be installed from GitHub with
-the following command:</p>
+<p>As called here, the stylo package limits words to those common to at
+least 75% of the texts (using the <code>culling...</code> argumements),
+saves the data in an object called <code>federalist_mfw</code>, and
+plots the texts based on their word usage with principal component
+analysis:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jmclawson/stylo2gg"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="working-from-stylo">Working from stylo<a class="anchor" aria-label="anchor" href="#working-from-stylo"></a>
-</h2>
-<div class="section level3">
-<h3 id="principal-component-analysis">Principal component analysis<a class="anchor" aria-label="anchor" href="#principal-component-analysis"></a>
-</h3>
-<p>The stylo2gg package is designed to work on data recorded by the
-stylo package. The following code shows stylo at work, measuring word
-frequencies among the eighty-five <em>Federalist Papers</em>, originally
-published pseudonymously in 1788. As called here, the stylo package
-limits words to those common to at least 75% of the texts (using the
-<code>culling...</code> argumements), saves the data in an object called
-<code>federalist_mfw</code>, and plots the texts based on their word
-usage with principal component analysis:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/computationalstylistics/stylo" class="external-link">stylo</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">federalist_mfw</span> <span class="op">&lt;-</span> </span>
@@ -135,12 +128,12 @@ here with green crosses.
 </div>
 <p>By default, the <code><a href="../reference/stylo2gg.html">stylo2gg()</a></code> function uses both the data
 and visualization settings from <code>federalist_mfw</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jmclawson.github.io/stylo2gg/">stylo2gg</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jmclawson/stylo2gg" class="external-link">stylo2gg</a></span><span class="op">)</span></span>
 <span><span class="va">federalist_mfw</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/stylo2gg.html">stylo2gg</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="stylo2gg_files/figure-html/unnamed-chunk-5-1.png" alt="Using selected `ggplot2` defaults for shapes and colors, the visualization created by `stylo2gg` nevertheless shows the same patterns of style, presenting a figure drawn from the same principal components. Here, the disputed papers are marked by purple diamonds, and they seem closest in style to the parts known to be by Madison, marked by blue Xs." width="700"><p class="caption">
+<img src="stylo2gg_files/figure-html/unnamed-chunk-4-1.png" alt="Using selected `ggplot2` defaults for shapes and colors, the visualization created by `stylo2gg` nevertheless shows the same patterns of style, presenting a figure drawn from the same principal components. Here, the disputed papers are marked by purple diamonds, and they seem closest in style to the parts known to be by Madison, marked by blue Xs." width="700"><p class="caption">
 Using selected <code>ggplot2</code> defaults for shapes and colors, the
 visualization created by <code>stylo2gg</code> nevertheless shows the
 same patterns of style, presenting a figure drawn from the same
@@ -152,13 +145,13 @@ Madison, marked by blue Xs.
 <p>Other settings are explained in the article on <a href="articles/principal-component-analysis.html">principle component
 analysis</a>.</p>
 </div>
-<div class="section level3">
-<h3 id="hierarchical-clustering">Hierarchical clustering<a class="anchor" aria-label="anchor" href="#hierarchical-clustering"></a>
-</h3>
+<div class="section level2">
+<h2 id="hierarchical-clustering">Hierarchical clustering<a class="anchor" aria-label="anchor" href="#hierarchical-clustering"></a>
+</h2>
 <p>In addition to two-dimensional relationships with principal
 components, stylo can also show a dendrogram for cluster analysis,
 showing texts’ relationships based on their distance to each other.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">federalist_mfw2</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/stylo/man/stylo.html" class="external-link">stylo</a></span><span class="op">(</span>gui <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>      corpus.dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/federalist"</span>, package <span class="op">=</span> <span class="st">"stylo2gg"</span><span class="op">)</span>,</span>
@@ -179,11 +172,11 @@ Dendrogram of hierarchical clusters, prepared by stylo.
 </div>
 <p>This <code>federalist_mfw2</code> object can then be piped into
 <code><a href="../reference/stylo2gg.html">stylo2gg()</a></code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">federalist_mfw2</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/stylo2gg.html">stylo2gg</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="stylo2gg_files/figure-html/unnamed-chunk-8-1.png" alt="As with principal components analysis, `stylo2gg()` function defaults will recreate the chart made by `stylo()`." width="700"><p class="caption">
+<img src="stylo2gg_files/figure-html/unnamed-chunk-7-1.png" alt="As with principal components analysis, `stylo2gg()` function defaults will recreate the chart made by `stylo()`." width="700"><p class="caption">
 As with principal components analysis, <code><a href="../reference/stylo2gg.html">stylo2gg()</a></code> function
 defaults will recreate the chart made by <code><a href="https://rdrr.io/pkg/stylo/man/stylo.html" class="external-link">stylo()</a></code>.
 </p>
@@ -191,12 +184,12 @@ defaults will recreate the chart made by <code><a href="https://rdrr.io/pkg/styl
 <p>Alternatively, using the unnumbered <code>federalist_mfw</code>
 object from earlier will create a similar cluster analysis using the
 option <code>viz="CA"</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">federalist_mfw</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/stylo2gg.html">stylo2gg</a></span><span class="op">(</span>viz<span class="op">=</span><span class="st">"CA"</span>,</span>
 <span>           shapes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="stylo2gg_files/figure-html/unnamed-chunk-9-1.png" alt="Function arguments simplify exploration without necessitating additional calls to `stylo()`." width="700"><p class="caption">
+<img src="stylo2gg_files/figure-html/unnamed-chunk-8-1.png" alt="Function arguments simplify exploration without necessitating additional calls to `stylo()`." width="700"><p class="caption">
 Function arguments simplify exploration without necessitating additional
 calls to <code><a href="https://rdrr.io/pkg/stylo/man/stylo.html" class="external-link">stylo()</a></code>.
 </p>
@@ -204,7 +197,6 @@ calls to <code><a href="https://rdrr.io/pkg/stylo/man/stylo.html" class="externa
 <p>Additional settings for visualizing clusters with dendrograms are
 explained in the article on <a href="articles/hierarchical-clustering.html">hierarchical
 clustering</a>.</p>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

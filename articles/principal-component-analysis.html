@@ -60,7 +60,14 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/jmclawson/stylo2gg/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -75,14 +82,14 @@
       <img src="../logo.png" class="logo" alt=""><h1>Principal component analysis</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/jmclawson/stylo2gg/blob/HEAD/vignettes/articles/principal-component-analysis.Rmd" class="external-link"><code>vignettes/articles/principal-component-analysis.Rmd</code></a></small>
       <div class="d-none name"><code>principal-component-analysis.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jmclawson.github.io/stylo2gg/">stylo2gg</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jmclawson/stylo2gg" class="external-link">stylo2gg</a></span><span class="op">)</span></span></code></pre></div>
 <p>One common method for understanding stylometric relationships among
 texts is to visualize a principal component analysis in a
 two-dimensional space. To do this, typically the first principal
@@ -191,7 +198,7 @@ default key for showing color of text.
 </div>
 <p>Displaying these labels makes it possible further to study Mosteller
 and Wallace’s findings on the papers jointly authored by Madison and
-Hamilton: in this principal components analysis of 120 most frequent
+Hamilton: in this principal component analysis of 120 most frequent
 words, papers 18, 19, and 20 seem closer in style to Madison than to
 Hamilton, and Mosteller and Wallace’s work using different techniques
 seems to show the same finding for two of these three papers, with mixed
@@ -227,12 +234,12 @@ to their ordering on the legend:</p>
 <span>           labeling <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>           highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="principal-component-analysis_files/figure-html/unnamed-chunk-7-1.png" alt="The `highlight` option accepts numbers corresponding to categories shown on the legend. Highlights on principal components charts can include 1 or more categories, but highlights for hierarchical clusters can only accept one category. To draw these loops around points on a scatterplot, stylogg relies on the &lt;a href='https://cran.r-project.org/web/packages/ggalt/index.html'&gt;ggalt&lt;/a&gt;
+<img src="principal-component-analysis_files/figure-html/unnamed-chunk-7-1.png" alt="The `highlight` option accepts numbers corresponding to categories shown on the legend. Highlights on principal component charts can include 1 or more categories, but highlights for hierarchical clusters can only accept one category. To draw these loops around points on a scatterplot, stylogg relies on the &lt;a href='https://cran.r-project.org/web/packages/ggalt/index.html'&gt;ggalt&lt;/a&gt;
 package.” width=“700” /&gt;
 &lt;p class=" caption>
 The <code>highlight</code> option accepts numbers corresponding to
-categories shown on the legend. Highlights on principal components
-charts can include 1 or more categories, but highlights for hierarchical
+categories shown on the legend. Highlights on principal component charts
+can include 1 or more categories, but highlights for hierarchical
 clusters can only accept one category. To draw these loops around points
 on a scatterplot, stylogg relies on the
 <a href="https://cran.r-project.org/web/packages/ggalt/index.html" class="external-link">ggalt</a>
@@ -247,8 +254,7 @@ package.
 about the underlying word frequencies that inform their placement. The
 <code>top.loadings</code> option allows us to show a number of
 words—ordered from the most frequent to the least frequent—overlaid with
-scaled vectors as alternative axes on the principal components
-chart:</p>
+scaled vectors as alternative axes on the principal component chart:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">federalist_mfw</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/stylo2gg.html">stylo2gg</a></span><span class="op">(</span>shapes <span class="op">=</span> <span class="cn">FALSE</span>, </span>
@@ -405,8 +411,8 @@ or to employ contrast to emphasize a particular group.</p>
 relationships among known texts and authors before considering those of
 unknown provenance. New in version 1.0, stylo2gg’s
 <code>withholding</code> parameter allows for certain classes to be left
-out from defining the base projection of a principal components
-analysis. These texts are then projected into a space they did not help
+out from defining the base projection of a principal component analysis.
+These texts are then projected into a space they did not help
 define:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">federalist_mfw</span> <span class="op">|&gt;</span> </span>
@@ -423,7 +429,7 @@ classes of texts from the underlying projection.
 <div class="section level3">
 <h3 id="choosing-principal-components">Choosing principal components<a class="anchor" aria-label="anchor" href="#choosing-principal-components"></a>
 </h3>
-<p>Follosing stylo’s lead, stylo2gg shows the first two principal
+<p>Following stylo’s lead, stylo2gg shows the first two principal
 components by default, but it may often be necessary to show more.
 Introduced earlier in 2023, the <code>pc.x</code> and <code>pc.y</code>
 parameters make it possible to map other components to the X-axis and
@@ -436,9 +442,9 @@ Stylo2gg’s issue tracker on GitHub: &lt;a href="https://github.com/jmclawson/s
 <p><img src="principal-component-analysis_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="other-options-for-principal-components-analysis">Other options for principal components analysis<a class="anchor" aria-label="anchor" href="#other-options-for-principal-components-analysis"></a>
+<h3 id="other-options-for-principal-component-analysis">Other options for principal component analysis<a class="anchor" aria-label="anchor" href="#other-options-for-principal-component-analysis"></a>
 </h3>
-<p>In addition to the options shown above, principal components analysis
+<p>In addition to the options shown above, principal component analysis
 can be directed with a covariance matrix (<code>viz="PCV"</code>) or
 correlation matrix (<code>viz="PCV"</code>), and a given chart can be
 flipped horizontally (with <code>invert.x=TRUE</code>) or vertically
@@ -464,10 +470,10 @@ Ggplot2 commands, adding a title (using
 <span>       subtitle <span class="op">=</span> <span class="st">"Setting alpha values is a good idea when solid points overlap."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title.position <span class="op">=</span> <span class="st">"plot"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="principal-component-analysis_files/figure-html/unnamed-chunk-16-1.png" alt="Setting `viz='pca'` rather than the stylo-flavored `viz='PCR'` or `viz='PCV'` prepares a minimal visualization of a principal components analysis derived from a correlation matrix. This might be a good setting to use if further customizing the figure by adding refinements provided by ggplot2 functions---at which point it will become necessary to load that package explicitly. The example here also shows the utility of the stylo2gg function for adjusting labels, `rename_category()`." width="700"><p class="caption">
+<img src="principal-component-analysis_files/figure-html/unnamed-chunk-16-1.png" alt="Setting `viz='pca'` rather than the stylo-flavored `viz='PCR'` or `viz='PCV'` prepares a minimal visualization of a principal component analysis derived from a correlation matrix. This might be a good setting to use if further customizing the figure by adding refinements provided by ggplot2 functions---at which point it will become necessary to load that package explicitly. The example here also shows the utility of the stylo2gg function for adjusting labels, `rename_category()`." width="700"><p class="caption">
 Setting <code>viz='pca'</code> rather than the stylo-flavored
 <code>viz='PCR'</code> or <code>viz='PCV'</code> prepares a minimal
-visualization of a principal components analysis derived from a
+visualization of a principal component analysis derived from a
 correlation matrix. This might be a good setting to use if further
 customizing the figure by adding refinements provided by ggplot2
 functions—at which point it will become necessary to load that package
