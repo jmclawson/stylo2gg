@@ -1,5 +1,5 @@
 ---
-title: "Principal component analysis"
+title: "Principal Component Analysis"
 ---
 
 ```{r, include = FALSE}
@@ -9,11 +9,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, message=FALSE, warning=FALSE}
-library(stylo2gg)
-```
+When looking for stylistic similarities among texts, it is common to use principal component analysis to project many different features in a flattened two-dimensional space. Typically the first principal component is projected on the X-axis, and the second component is projected on the Y-axis. 
 
-One common method for understanding stylometric relationships among texts is to visualize a principal component analysis in a two-dimensional space. To do this, typically the first principal component is projected on the X-axis, and the second principal component is projected on the Y-axis. In addition to measuring word frequencies among all documents in a corpus, the stylo package shows a visualization of such an analysis, projecting many documents into a chart showing these kinds of coordinates. As an example, here's the code and output showing similarities among the eighty-five *Federalist Papers*, originally published pseudonymously in 1788:
+The stylo package, in addition to measuring word frequencies among all documents in a corpus, will create visualizations of this type, projecting many documents into a two-dimensional chart showing these kinds of coordinates. As an example, here's the code and output from stylo showing similarities among the eighty-five *Federalist Papers*, originally published pseudonymously in 1788:
 
 ```{r eval=FALSE, include=FALSE}
 # Only run this code chunk interactively, to create the needed files
@@ -70,7 +68,8 @@ As the figure suggests, most of these documents were eventually known to be writ
 
 In saving this output to a named object `federalist_mfw`, stylo makes it possible to access the frequency tables to study them in other ways. By taking advantage of this object, the stylo2gg package makes it very easy to try out different visualizations. Without any changed parameters, the `stylo2gg()` function will import defaults from the call used to run `stylo()`:
 
-```{r, fig.cap="Using selected `ggplot2` defaults for shapes and colors, the visualization created by `stylo2gg` nevertheless shows the same patterns of style, presenting a figure drawn from the same principal components. Here, the disputed papers are marked by purple diamonds, and they seem closest in style to the parts known to be by Madison, marked by blue Xs."}
+```{r, message=FALSE, warning=FALSE, fig.cap="Using selected `ggplot2` defaults for shapes and colors, the visualization created by `stylo2gg` nevertheless shows the same patterns of style, presenting a figure drawn from the same principal components. Here, the disputed papers are marked by purple diamonds, and they seem closest in style to the parts known to be by Madison, marked by blue Xs."}
+library(stylo2gg)
 federalist_mfw |> 
   stylo2gg()
 ```
