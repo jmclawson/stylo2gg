@@ -15,6 +15,7 @@ Description: Import data from stylo() and visualize it with different
     functions for reproducible research.
 URL: https://github.com/jmclawson/stylo2gg, 
     https://jmclawson.github.io/stylo2gg/
+BugReports: https://github.com/jmclawson/stylo2gg/issues
 Imports:
     dendextend,
     dplyr,
