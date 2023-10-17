@@ -3,7 +3,9 @@ Type: Package
 Title: Visualize Stylometric Data with ggplot2
 Version: 1.0.2
 Date: 2023-07-24
-Author: James M. Clawson
+Authors@R: 
+    person("James", "Clawson", , "clawson@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0008-6756-0607"))
 Maintainer: James M. Clawson <clawson@gmail.com>
 Description: Import data from stylo() and visualize it with different
     settings, removing the need to reevaluate for new visualizations.
