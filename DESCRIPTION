@@ -2,7 +2,7 @@ Package: stylo2gg
 Type: Package
 Title: Visualize Stylometric Data with ggplot2
 Version: 1.0.3
-Date: 2023-07-24
+Date: 2025-11-21
 Authors@R: 
     person("James", "Clawson", , "clawson@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0008-6756-0607"))
@@ -21,6 +21,7 @@ BugReports: https://github.com/jmclawson/stylo2gg/issues
 Imports:
     dendextend,
     dplyr,
+    ggalt,
     ggplot2,
     ggrepel,
     lemon,
