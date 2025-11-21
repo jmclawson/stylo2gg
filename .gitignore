@@ -9,3 +9,5 @@ stylo_config.txt
 table_with_frequencies.txt
 wordlist.txt
 *EDGES.csv
+renv/library/
+renv/staging/

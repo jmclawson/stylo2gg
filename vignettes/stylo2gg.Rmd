@@ -38,8 +38,7 @@ federalist_mfw <-
         culling.max = 75,
         culling.min = 75,
         mfw.min = 900,
-        mfw.max = 900,
-        write.rds.file = TRUE)
+        mfw.max = 900)
 
 saveRDS(federalist_mfw, "federalist_mfw.rds")
 ```
@@ -101,8 +100,7 @@ federalist_mfw2 <- stylo(gui = FALSE,
       culling.max = 75,
       culling.min = 75,
       mfw.min = 900,
-      mfw.max = 900,
-      write.rds.file = TRUE)
+      mfw.max = 900)
 
 saveRDS(federalist_mfw2, "federalist_mfw2.rds")
 ```
